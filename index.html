@@ -55,10 +55,11 @@
 
         .main-grid { display: flex; flex-direction: column; gap: 15px; padding: 15px; max-width: 1200px; margin: auto; }
         .panel-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
-        /* TradingView Embed Adjustments */
-        .tradingview-wrapper { width: 100%; height: 160px; border-radius: 12px; overflow: hidden; background: transparent; }
+        /* DexScreener Widget Container */
+        .dex-wrapper { width: 100%; height: 180px; border-radius: 14px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.05); }
+        .dex-wrapper iframe { width: 100%; height: 100%; border: none; }
 
         /* Referral UI */
         .ref-box { display: flex; gap: 8px; margin-top: 12px; }
@@ -123,33 +124,18 @@
 
     <div class="main-grid">
         <div class="content-left">
-            <div class="panel-card" style="padding: 15px;">
+            <div class="panel-card" style="padding: 12px;">
                 <div class="chart-header">
                     <div>
-                        <h3 style="font-size: 14px;">RS / USDT <small style="color: #888;">Ceyloncoin Realtime</small></h3>
+                        <h3 style="font-size: 14px;">RS / USDT <small style="color: #888;">Ceyloncoin Live Price</small></h3>
                     </div>
                     <div>
                         <button class="btn-action" style="padding: 6px 14px; font-size: 11px;" onclick="dailyReward()">BONUS</button>
                     </div>
                 </div>
                 
-                <div class="tradingview-wrapper">
-                    <div class="tradingview-widget-container">
-                        <div class="tradingview-widget-container__widget"></div>
-                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-                        {
-                        "symbol": "PANCAKESWAP:RSUSDT",
-                        "width": "100%",
-                        "height": "100%",
-                        "locale": "en",
-                        "dateRange": "12M",
-                        "colorTheme": "dark",
-                        "isTransparent": true,
-                        "autosize": true,
-                        "largeChartUrl": ""
-                        }
-                        </script>
-                    </div>
+                <div class="dex-wrapper">
+                    <iframe src="https://dexscreener.com/bsc/0x0d3e239e2486d3701bc25c9b986b6a22c676c12c?embed=1&theme=dark&trades=0&info=0"></iframe>
                 </div>
             </div>
 
@@ -206,6 +192,7 @@
         if (currentUser) showDashboard();
     }
 
+    // --- AUTH SYSTEMS ---
     function handleAuth() {
         let email = document.getElementById('auth-email').value.trim();
         let pass = document.getElementById('auth-password').value.trim();
@@ -314,5 +301,5 @@
     }
 </script>
 </body>
-    </html>
-    
+                    </html>
+                    
