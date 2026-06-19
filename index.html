@@ -216,10 +216,19 @@
 </div>
 
 <script>
-    let balance = 10.00;
+    // LocalStorage එකෙන් කලින් සේව් කරපු බැලන්ස් එක ගන්නවා, නැත්නම් 10.00 ක් දෙනවා
+    let balance = parseFloat(localStorage.getItem('web_crs_balance')) || 10.00;
 
     window.onload = function() {
-        // Direct View logic for testing
+        // --- AUTO LOGIN CHECK ENGINE ---
+        // සයිට් එක ලෝඩ් වෙද්දීම කලින් ලොග් වෙලාද කියලා චෙක් කරනවා
+        let isLoggedIn = localStorage.getItem('web_crs_logged_in');
+        
+        if (isLoggedIn === 'true') {
+            // කලින් ලොග් වෙලා නම් කෙලින්ම Dashboard එක පෙන්වනවා
+            launchDashboard();
+        }
+
         let urlParams = new URLSearchParams(window.location.search);
         if(urlParams.get('ref')) {
             alert("Referral detected!");
@@ -227,9 +236,24 @@
     }
 
     function handleAuth() {
-        // කිසිම හිරවීමක් නැතුව කෙලින්ම ඩෑෂ්බෝඩ් එක පෙන්වයි
+        let email = document.getElementById('auth-email').value.trim();
+        let pass = document.getElementById('auth-password').value.trim();
+        if (email === "" || !email.includes("@") || pass.length < 4) {
+            alert("Please enter a valid email and a password.");
+            return;
+        }
+
+        // බ්‍රවුසර් එකට ලොගින් එක සේව් කරනවා හැමදාටම මතක හිටින්න
+        localStorage.setItem('web_crs_logged_in', 'true');
+        localStorage.setItem('web_crs_balance', balance);
+        
+        launchDashboard();
+    }
+
+    function launchDashboard() {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('dashboard-screen').style.display = 'block';
+        document.getElementById('crs-balance').innerText = balance.toFixed(2);
         document.getElementById('ref-link-display').innerText = window.location.origin + window.location.pathname + "?ref=CeylonCryptoHub";
         
         fetchNodePrice();
@@ -254,7 +278,6 @@
             }
         } catch(e) {}
         
-        // Backup display if API is busy
         let finalPrice = 0.00000083 + (Math.random() * 0.00000002);
         document.getElementById('node-live-price').innerText = "$" + finalPrice.toFixed(8);
         document.getElementById('node-24h-change').innerHTML = `<span style="color:#00ff88;"><i class="fa-solid fa-caret-up"></i> +1.24%</span> (Live)`;
@@ -309,6 +332,7 @@
             btn.disabled = false;
             let win = Math.floor(Math.random() * 25);
             balance += win;
+            localStorage.setItem('web_crs_balance', balance); // බැලන්ස් එකත් බ්‍රවුසර් එකේ සේව් වෙනවා
             document.getElementById('crs-balance').innerText = balance.toFixed(2);
             alert("You Won " + win + " CRS!");
         }, 4000);
@@ -316,10 +340,11 @@
 
     function dailyReward() {
         balance += 15;
+        localStorage.setItem('web_crs_balance', balance);
         document.getElementById('crs-balance').innerText = balance.toFixed(2);
         alert("15 CRS Added!");
     }
 </script>
 </body>
-                    </html>
-                    
+    </html>
+    
