@@ -57,9 +57,36 @@
         .panel-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
-        /* DexScreener Widget Container */
-        .dex-wrapper { width: 100%; height: 180px; border-radius: 14px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.05); }
-        .dex-wrapper iframe { width: 100%; height: 100%; border: none; }
+        /* Text Price Engine UI Box */
+        .price-tracker-box {
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.05), rgba(112, 0, 255, 0.02));
+            border: 1px solid rgba(0, 242, 255, 0.15);
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            margin-top: 5px;
+            box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.02);
+        }
+        .price-big-text {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: 1px;
+            margin: 8px 0;
+            text-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
 
         /* Referral UI */
         .ref-box { display: flex; gap: 8px; margin-top: 12px; }
@@ -124,18 +151,24 @@
 
     <div class="main-grid">
         <div class="content-left">
-            <div class="panel-card" style="padding: 12px;">
+            <div class="panel-card">
                 <div class="chart-header">
                     <div>
-                        <h3 style="font-size: 14px;">RS / USDT <small style="color: #888;">Ceyloncoin Live Price</small></h3>
+                        <h3 style="font-size: 14px; letter-spacing: 0.5px;">RS / USDT <small style="color: #888;">Ceyloncoin Realtime</small></h3>
                     </div>
                     <div>
                         <button class="btn-action" style="padding: 6px 14px; font-size: 11px;" onclick="dailyReward()">BONUS</button>
                     </div>
                 </div>
                 
-                <div class="dex-wrapper">
-                    <iframe src="https://dexscreener.com/bsc/0x0d3e239e2486d3701bc25c9b986b6a22c676c12c?embed=1&theme=dark&trades=0&info=0"></iframe>
+                <div class="price-tracker-box">
+                    <div class="status-badge" id="node-status">
+                        <i class="fa-solid fa-circle-nodes"></i> Real-time Node Connected
+                    </div>
+                    <div class="price-big-text" id="node-live-price">Fetching...</div>
+                    <div style="font-size: 12px; color: var(--text-muted);" id="node-24h-change">
+                        Tracking smart contract liquid pools
+                    </div>
                 </div>
             </div>
 
@@ -164,142 +197,5 @@
         </div>
 
         <div class="panel-card" style="height: fit-content;">
-            <h3 style="margin-bottom: 10px; font-size: 15px;"><i class="fa-solid fa-bolt" style="color: #00f2ff;"></i> LIVE FEED</h3>
-            <div id="activity-feed"></div>
-        </div>
-    </div>
-</div>
-
-<div id="game-overlay" class="overlay">
-    <div class="modal-content">
-        <h2 style="font-size: 20px;">LUCKY SPIN</h2>
-        <div style="position: relative;">
-            <div class="wheel-pointer"></div>
-            <canvas id="wheel-canvas" class="wheel-container" width="220" height="220"></canvas>
-        </div>
-        <button id="spin-btn" class="btn-action" onclick="spinWheel()">SPIN NOW</button>
-        <button class="btn-action" style="background: transparent; color: #fff; border: 1px solid #444; margin-left: 5px;" onclick="closeGame()">CLOSE</button>
-    </div>
-</div>
-
-<script>
-    const REFERRAL_REWARD_POINTS = 50.00;
-    let balance = parseFloat(localStorage.getItem('web_crs_balance')) || 0.00;
-    let currentUser = localStorage.getItem('web_crs_user') || "";
-
-    window.onload = function() {
-        checkReferralBonus();
-        if (currentUser) showDashboard();
-    }
-
-    // --- AUTH SYSTEMS ---
-    function handleAuth() {
-        let email = document.getElementById('auth-email').value.trim();
-        let pass = document.getElementById('auth-password').value.trim();
-        if (email === "" || !email.includes("@") || pass.length < 4) {
-            alert("Please enter a valid email and a password.");
-            return;
-        }
-        localStorage.setItem('web_crs_user', email);
-        currentUser = email;
-        if(balance === 0) { balance = 10.00; localStorage.setItem('web_crs_balance', balance); }
-        showDashboard();
-    }
-
-    function showDashboard() {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('dashboard-screen').style.display = 'block';
-        document.getElementById('crs-balance').innerText = balance.toFixed(2);
-        
-        let username = "CeylonCryptoHub";
-        document.getElementById('ref-link-display').innerText = window.location.origin + window.location.pathname + "?ref=" + username;
-    }
-
-    function checkReferralBonus() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const referrer = urlParams.get('ref');
-        if (referrer && !localStorage.getItem('web_crs_referred_done')) {
-            balance += REFERRAL_REWARD_POINTS;
-            localStorage.setItem('web_crs_balance', balance);
-            localStorage.setItem('web_crs_referred_done', 'true');
-            alert(`Welcome! You received ${REFERRAL_REWARD_POINTS} CRS via Referral from ${referrer}!`);
-        }
-    }
-
-    function copyReferral() {
-        let linkText = document.getElementById('ref-link-display').innerText;
-        navigator.clipboard.writeText(linkText);
-        alert("Referral Link copied!");
-    }
-
-    // --- LIVE FEED ---
-    const names = ["Nalin99", "Crypto_King", "Shalu_R", "Sampath_X", "Amila_Dev", "RS_Payer"];
-    const feeds = document.getElementById('activity-feed');
-    function addFeed() {
-        if(!feeds) return;
-        let name = names[Math.floor(Math.random() * names.length)];
-        let win = (Math.random() * 20).toFixed(2);
-        let div = document.createElement('div');
-        div.className = 'feed-item';
-        div.innerHTML = `<b>${name}</b> just secured <b>${win} CRS</b>`;
-        feeds.prepend(div);
-        if (feeds.children.length > 4) feeds.lastChild.remove();
-    }
-    setInterval(addFeed, 5000);
-
-    // --- WHEEL SYSTEM ---
-    function openGame() { document.getElementById('game-overlay').style.display = 'flex'; drawWheel(); }
-    function closeGame() { document.getElementById('game-overlay').style.display = 'none'; }
-
-    const wheelCanvas = document.getElementById('wheel-canvas');
-    const wctx = wheelCanvas.getContext('2d');
-    const rewards = ["10", "0", "50", "5", "JACKPOT", "10", "20", "0"];
-    const colors = ["#101623", "#1b2135", "#101623", "#1b2135", "#ffcc00", "#101623", "#1b2135", "#101623"];
-
-    function drawWheel() {
-        let angle = (2 * Math.PI) / rewards.length;
-        for (let i = 0; i < rewards.length; i++) {
-            wctx.beginPath(); wctx.moveTo(110, 110);
-            wctx.arc(110, 110, 110, i * angle, (i + 1) * angle);
-            wctx.fillStyle = colors[i]; wctx.fill();
-            wctx.save(); wctx.translate(110, 110); wctx.rotate(i * angle + angle / 2);
-            wctx.fillStyle = colors[i] === "#ffcc00" ? "#000" : "#fff";
-            wctx.font = "bold 11px Arial"; wctx.fillText(rewards[i], 60, 4); wctx.restore();
-        }
-    }
-
-    let rotation = 0;
-    function spinWheel() {
-        let btn = document.getElementById('spin-btn');
-        btn.disabled = true;
-        let extraRot = Math.floor(Math.random() * 360) + 1800;
-        rotation += extraRot;
-        wheelCanvas.style.transform = `rotate(${rotation}deg)`;
-        
-        setTimeout(() => {
-            btn.disabled = false;
-            let win = Math.floor(Math.random() * 25);
-            balance += win;
-            localStorage.setItem('web_crs_balance', balance);
-            document.getElementById('crs-balance').innerText = balance.toFixed(2);
-            alert("You Won " + win + " CRS!");
-        }, 4000);
-    }
-
-    function dailyReward() {
-        let lastClaim = localStorage.getItem('web_crs_daily');
-        let today = new Date().toDateString();
-        if (lastClaim === today) {
-            alert("Already claimed today!");
-        } else {
-            balance += 15;
-            localStorage.setItem('web_crs_balance', balance);
-            localStorage.setItem('web_crs_daily', today);
-            document.getElementById('crs-balance').innerText = balance.toFixed(2);
-            alert("15 CRS added successfully!");
-        }
-    }
-</script>
-</body>
-                    </html>
-                    
+            <h3 style="margin-bottom:
+                
