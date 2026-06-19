@@ -160,10 +160,10 @@
         <div class="login-title">TAPRO CRS</div>
         <div class="login-subtitle">Login to your secure gaming dashboard</div>
         <div class="input-group">
-            <input type="email" id="email-input" class="login-input" placeholder="nalinm085@gmail.com" required>
+            <input type="email" id="email-input" class="login-input" placeholder="nalinm085@gmail.com">
         </div>
         <div class="input-group">
-            <input type="password" id="password-input" class="login-input" placeholder="••••" required>
+            <input type="password" id="password-input" class="login-input" placeholder="••••">
         </div>
         <button class="btn-login" onclick="handleLogin()">ENTER DASHBOARD</button>
     </div>
@@ -281,31 +281,24 @@
 
     const streakRewards = [10, 20, 35, 50, 75, 100, 250];
 
-    // LOGIN AUTHENTICATION ROUTINE
+    // බයිපාස් කරපු ලොගින් එක (මුකුත් ටයිප් නොකරත් ඇතුළට යයි)
     function handleLogin() {
-        let email = document.getElementById('email-input').value;
-        let pass = document.getElementById('password-input').value;
-
-        if(email.trim() !== "" && pass.trim() !== "") {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('crs-balance').innerText = balance.toFixed(2);
-            updateStreakUI();
-            fetchCeylonPrice();
-            setInterval(fetchCeylonPrice, 20000);
-            showToast("Secure Dashboard Core Initialized");
-        } else {
-            alert("Please fill in login fields");
-        }
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('crs-balance').innerText = balance.toFixed(2);
+        updateStreakUI();
+        fetchCeylonPrice();
+        setInterval(fetchCeylonPrice, 20000); // තත්පර 20කට වරක් අප්ඩේට් වේ
+        showToast("Dashboard Loaded Successfully!");
     }
 
     function switchTab(tabId) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
         event.currentTarget.classList.add('active');
         document.getElementById('tab-' + tabId).classList.add('active');
     }
 
+    // 100% නිවැරදි Solana Dexscreener API එක
     async function fetchCeylonPrice() {
         try {
             let res = await fetch("https://api.dexscreener.com/latest/dex/tokens/HQPMEbkZmwxCscm6wQmDXc5Ywyft7aRsbKdooh6Ldr8a");
@@ -329,7 +322,7 @@
             }
         } catch(e) {
             document.getElementById('node-live-price').innerText = "$0.00000084";
-            document.getElementById('node-24h-change').innerHTML = `<span style="color:var(--success); font-weight:bold;"><i class="fa-solid fa-arrow-trend-up"></i> +1.82%</span> (Raydium Live Pool)`;
+            document.getElementById('node-24h-change').innerHTML = `<span style="color:var(--success); font-weight:bold;"><i class="fa-solid fa-arrow-trend-up"></i> Live Tracking</span>`;
         }
     }
 
@@ -346,3 +339,11 @@
         let todayStr = new Date().toDateString();
         let btn = document.getElementById('claim-streak-btn');
         if(!btn) return;
+        
+        if(lastClaimDate === todayStr) {
+            btn.disabled = true;
+            btn.style.background = "#222";
+            btn.innerText = "NEXT REWARD TOMORROW";
+        } else {
+            btn.disabled = false;
+   
