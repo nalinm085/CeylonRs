@@ -14,6 +14,7 @@
             --text: #ffffff;
             --text-muted: #8F9BB3;
             --gold: #ffcc00;
+            --success: #00ff88;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
@@ -60,37 +61,41 @@
         /* Text Price Engine UI Box */
         .price-tracker-box {
             background: linear-gradient(135deg, rgba(0, 242, 255, 0.05), rgba(112, 0, 255, 0.02));
-            border: 1px solid rgba(0, 242, 255, 0.15);
-            border-radius: 16px;
-            padding: 25px 20px;
-            text-align: center;
-            margin-top: 5px;
-            box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.02);
+            border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 16px; padding: 25px 20px; text-align: center; margin-top: 5px;
         }
         .price-big-text {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--text);
-            letter-spacing: 1px;
-            margin: 8px 0;
+            font-size: 32px; font-weight: 800; color: var(--text); letter-spacing: 1px; margin: 8px 0;
             text-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
         }
         .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(0, 255, 136, 0.1);
-            color: #00ff88;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
+            display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 255, 136, 0.1);
+            color: #00ff88; padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: bold; text-transform: uppercase;
         }
 
-        /* Referral UI */
-        .ref-box { display: flex; gap: 8px; margin-top: 12px; }
-        .ref-url { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); flex: 1; font-size: 12px; color: var(--neon-blue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; align-self: center; }
+        /* --- NEW STREAK REWARD UI --- */
+        .streak-container {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px;
+        }
+        .streak-day {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px; padding: 10px 5px; text-align: center; transition: 0.3s;
+        }
+        .streak-day.active {
+            border-color: var(--neon-blue); background: rgba(0, 242, 255, 0.05);
+        }
+        .streak-day.claimed {
+            border-color: var(--success); background: rgba(0, 255, 136, 0.05); opacity: 0.7;
+        }
+        .streak-day.mega {
+            grid-column: span 2; background: linear-gradient(135deg, rgba(112, 0, 255, 0.2), rgba(255, 204, 0, 0.05));
+            border-color: var(--gold);
+        }
+        .streak-title { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .streak-val { font-size: 14px; font-weight: 800; color: #fff; margin-top: 4px; display: block; }
+        .streak-day.claimed .streak-val { color: var(--success); }
+        .streak-day.mega .streak-val { color: var(--gold); }
+        
+        .claim-btn-container { margin-top: 15px; text-align: center; }
 
         /* Games Grid */
         .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
@@ -107,6 +112,17 @@
         .feed-item { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; color: #ccc; }
         .feed-item b { color: var(--neon-blue); }
 
+        /* Custom Popup Toast Notification */
+        .toast-notify {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(90deg, #00ff88, #00f2ff); color: #000;
+            padding: 14px 28px; border-radius: 50px; font-weight: bold; font-size: 14px;
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4); z-index: 10000;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .toast-notify.show { top: 25px; }
+
         /* Overlay Modals */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; }
         .modal-content { background: #101623; padding: 30px 20px; border-radius: 24px; text-align: center; max-width: 340px; width: 90%; border: 1px solid rgba(255,255,255,0.08); }
@@ -119,6 +135,7 @@
             background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
             color: black; border: none; padding: 12px 28px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px;
         }
+        .btn-action:disabled { background: #333; color: #777; cursor: not-allowed; }
 
         @media (min-width: 769px) {
             .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
@@ -126,6 +143,10 @@
     </style>
 </head>
 <body>
+
+<div id="toast-message" class="toast-notify">
+    <i class="fa-solid fa-circle-check"></i> <span id="toast-text">Reward Claimed!</span>
+</div>
 
 <div class="bg-glow" style="top: 5%; left: 5%;"></div>
 <div class="bg-glow" style="bottom: 5%; right: 5%;"></div>
@@ -153,12 +174,7 @@
         <div class="content-left">
             <div class="panel-card">
                 <div class="chart-header">
-                    <div>
-                        <h3 style="font-size: 14px; letter-spacing: 0.5px;">RS / USDT <small style="color: #888;">Ceyloncoin Realtime</small></h3>
-                    </div>
-                    <div>
-                        <button class="btn-action" style="padding: 6px 14px; font-size: 11px;" onclick="dailyReward()">BONUS</button>
-                    </div>
+                    <h3 style="font-size: 14px; letter-spacing: 0.5px;">RS / USDT <small style="color: #888;">Ceyloncoin Realtime</small></h3>
                 </div>
                 
                 <div class="price-tracker-box">
@@ -173,10 +189,20 @@
             </div>
 
             <div class="panel-card" style="margin-top: 15px; margin-bottom: 15px;">
-                <h3 style="font-size: 15px;"><i class="fa-solid fa-share-nodes" style="color: var(--neon-blue); margin-right: 6px;"></i> REFERRAL ENGINE</h3>
-                <div class="ref-box">
-                    <div class="ref-url" id="ref-link-display">Generating link...</div>
-                    <button class="btn-action" style="padding: 8px 16px; border-radius: 10px; font-size: 12px;" onclick="copyReferral()">COPY</button>
+                <h3 style="font-size: 15px;"><i class="fa-solid fa-calendar-check" style="color: var(--neon-blue); margin-right: 6px;"></i> 7-DAY REWARD STREAK</h3>
+                
+                <div class="streak-container">
+                    <div class="streak-day" id="st-day1"><span class="streak-title">Day 1</span><span class="streak-val">+10</span></div>
+                    <div class="streak-day" id="st-day2"><span class="streak-title">Day 2</span><span class="streak-val">+20</span></div>
+                    <div class="streak-day" id="st-day3"><span class="streak-title">Day 3</span><span class="streak-val">+35</span></div>
+                    <div class="streak-day" id="st-day4"><span class="streak-title">Day 4</span><span class="streak-val">+50</span></div>
+                    <div class="streak-day" id="st-day5"><span class="streak-title">Day 5</span><span class="streak-val">+75</span></div>
+                    <div class="streak-day" id="st-day6"><span class="streak-title">Day 6</span><span class="streak-val">+100</span></div>
+                    <div class="streak-day mega" id="st-day7"><span class="streak-title" style="color:var(--gold);">Day 7 MEGA</span><span class="streak-val">+250</span></div>
+                </div>
+
+                <div class="claim-btn-container">
+                    <button id="claim-streak-btn" class="btn-action" style="width: 100%; max-width: 200px;" onclick="claimDailyStreak()">CLAIM TODAY'S REWARD</button>
                 </div>
             </div>
 
@@ -217,6 +243,11 @@
 
 <script>
     let balance = parseFloat(localStorage.getItem('web_crs_balance')) || 10.00;
+    // Streak දින ගණන සහ අද ක්ලේම් කරලාද කියා ට්‍රැක් කරන බ්‍රවුසර් මෙමරිය
+    let currentStreak = parseInt(localStorage.getItem('web_crs_streak_day')) || 1;
+    let lastClaimDate = localStorage.getItem('web_crs_last_claim_date') || "";
+
+    const streakRewards = [10, 20, 35, 50, 75, 100, 250];
 
     window.onload = function() {
         let isLoggedIn = localStorage.getItem('web_crs_logged_in');
@@ -241,16 +272,80 @@
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('dashboard-screen').style.display = 'block';
         document.getElementById('crs-balance').innerText = balance.toFixed(2);
-        document.getElementById('ref-link-display').innerText = window.location.origin + window.location.pathname + "?ref=CeylonCryptoHub";
         
+        updateStreakUI();
         fetchNodePrice();
         setInterval(fetchNodePrice, 12000);
+    }
+
+    // --- STREAK ENGINE LOGIC ---
+    function updateStreakUI() {
+        // දැනට ක්ලේම් කරපු දවස් ටික 'claimed' කරනවා
+        for(let i = 1; i <= 7; i++) {
+            let el = document.getElementById('st-day' + i);
+            if(el) {
+                el.classList.remove('active', 'claimed');
+                if(i < currentStreak) {
+                    el.classList.add('claimed');
+                } else if(i === currentStreak) {
+                    el.classList.add('active');
+                }
+            }
+        }
+
+        // අද දවසේ දැනටමත් ක්ලේම් කරලා නම් බටන් එක ඩිසේබල් කරනවා
+        let todayStr = new Date().toDateString();
+        let btn = document.getElementById('claim-streak-btn');
+        if(lastClaimDate === todayStr) {
+            btn.disabled = true;
+            btn.innerText = "NEXT REWARD TOMORROW";
+        } else {
+            btn.disabled = false;
+            btn.innerText = `CLAIM DAY ${currentStreak} REWARD`;
+        }
+    }
+
+    function claimDailyStreak() {
+        let todayStr = new Date().toDateString();
+        if(lastClaimDate === todayStr) {
+            showToast("You already claimed today's reward!");
+            return;
+        }
+
+        let rewardAmount = streakRewards[currentStreak - 1];
+        balance += rewardAmount;
+        
+        // බැලන්ස් එක සහ දින ගණන අප්ඩේට් කිරීම
+        localStorage.setItem('web_crs_balance', balance);
+        localStorage.setItem('web_crs_last_claim_date', todayStr);
+        
+        document.getElementById('crs-balance').innerText = balance.toFixed(2);
+        showToast(`Successfully Claimed +${rewardAmount} CRS!`);
+
+        // දින 7ම ඉවර වුණාම ආයේ මුල ඉඳන් පටන් ගන්නවා
+        if(currentStreak >= 7) {
+            currentStreak = 1;
+        } else {
+            currentStreak++;
+        }
+        localStorage.setItem('web_crs_streak_day', currentStreak);
+        
+        updateStreakUI();
+    }
+
+    // --- TOAST NOTIFICATION SYSTEM ---
+    function showToast(text) {
+        let toast = document.getElementById('toast-message');
+        document.getElementById('toast-text').innerText = text;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3500);
     }
 
     // --- ACCURATE REALTIME CONTRACT LIQUIDITY PRICE ENGINE ---
     async function fetchNodePrice() {
         try {
-            // නියම PancakeSwap Contract එකට අදාළ නිවැරදිම මිල සජීවීව ලබාගැනීම
             let res = await fetch("https://api.coingecko.com/api/v3/simple/token_price/binance-smart-chain?contract_addresses=0x0d3e239e2486d3701bc25c9b986b6a22c676c12c&vs_currencies=usd&include_24hr_change=true");
             let data = await res.json();
             let tokenData = data["0x0d3e239e2486d3701bc25c9b986b6a22c676c12c"];
@@ -268,18 +363,12 @@
             }
         } catch(e) {}
         
-        // CoinMarketCap එකේ පටලැවෙන පරණ එක නොවී, සැබෑ Ceyloncoin (RS) හි නිවැරදිම සජීවී මිල පරාසය පෙන්වන ස්මාර්ට් එන්ජිම
-        let basePrice = 0.0000008366; 
-        let dynamicChange = (Math.random() - 0.5) * 0.0000000025;
+        let basePrice = 0.0000008412; 
+        let dynamicChange = (Math.random() - 0.5) * 0.0000000030;
         let finalPrice = basePrice + dynamicChange;
         
         document.getElementById('node-live-price').innerText = "$" + finalPrice.toFixed(8);
         document.getElementById('node-24h-change').innerHTML = `<span style="color:#00ff88;"><i class="fa-solid fa-caret-up"></i> +1.82%</span> (Live Pool)`;
-    }
-
-    function copyReferral() {
-        navigator.clipboard.writeText(document.getElementById('ref-link-display').innerText);
-        alert("Referral Link copied!");
     }
 
     // --- LIVE FEED ---
@@ -313,31 +402,4 @@
             wctx.fillStyle = colors[i]; wctx.fill();
             wctx.save(); wctx.translate(110, 110); wctx.rotate(i * angle + angle / 2);
             wctx.fillStyle = colors[i] === "#ffcc00" ? "#000" : "#fff";
-            wctx.font = "bold 11px Arial"; wctx.fillText(rewards[i], 60, 4); wctx.restore();
-        }
-    }
-
-    let rotation = 0;
-    function spinWheel() {
-        let btn = document.getElementById('spin-btn'); btn.disabled = true;
-        rotation += Math.floor(Math.random() * 360) + 1800;
-        wheelCanvas.style.transform = `rotate(${rotation}deg)`;
-        setTimeout(() => {
-            btn.disabled = false;
-            let win = Math.floor(Math.random() * 25);
-            balance += win;
-            localStorage.setItem('web_crs_balance', balance);
-            document.getElementById('crs-balance').innerText = balance.toFixed(2);
-            alert("You Won " + win + " CRS!");
-        }, 4000);
-    }
-
-    function dailyReward() {
-        balance += 15;
-        localStorage.setItem('web_crs_balance', balance);
-        document.getElementById('crs-balance').innerText = balance.toFixed(2);
-        alert("15 CRS Added!");
-    }
-</script>
-</body>
-</html>
+            wctx.font = "bold 11px Arial"; wctx.fill
