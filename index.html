@@ -57,7 +57,6 @@
         .header-right { display: flex; align-items: center; gap: 10px; }
         .balance-card { background: rgba(255,255,255,0.05); padding: 6px 16px; border-radius: 50px; border: 1px solid var(--neon-blue); font-size: 14px; font-weight: bold; }
         
-        /* Logout Button Styles */
         .logout-btn {
             background: rgba(255, 74, 74, 0.1); color: var(--danger); border: 1px solid rgba(255, 74, 74, 0.2);
             width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
@@ -69,7 +68,6 @@
         .panel-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
-        /* Text Price Engine UI Box */
         .price-tracker-box {
             background: linear-gradient(135deg, rgba(0, 242, 255, 0.05), rgba(112, 0, 255, 0.02));
             border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 16px; padding: 25px 20px; text-align: center; margin-top: 5px;
@@ -91,12 +89,8 @@
             background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 12px; padding: 10px 5px; text-align: center; transition: 0.3s;
         }
-        .streak-day.active {
-            border-color: var(--neon-blue); background: rgba(0, 242, 255, 0.05);
-        }
-        .streak-day.claimed {
-            border-color: var(--success); background: rgba(0, 255, 136, 0.05); opacity: 0.7;
-        }
+        .streak-day.active { border-color: var(--neon-blue); background: rgba(0, 242, 255, 0.05); }
+        .streak-day.claimed { border-color: var(--success); background: rgba(0, 255, 136, 0.05); opacity: 0.7; }
         .streak-day.mega {
             grid-column: span 2; background: linear-gradient(135deg, rgba(112, 0, 255, 0.2), rgba(255, 204, 0, 0.05));
             border-color: var(--gold);
@@ -133,6 +127,7 @@
             display: flex; align-items: center; gap: 8px;
         }
         .toast-notify.show { top: 25px; }
+        .toast-notify.error-toast { background: linear-gradient(90deg, #ff4a4a, #ff7676); color: white; box-shadow: 0 10px 25px rgba(255, 74, 74, 0.4); }
 
         /* Overlay Modals */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; }
@@ -148,15 +143,13 @@
         }
         .btn-action:disabled { background: #333; color: #777; cursor: not-allowed; }
 
-        @media (min-width: 769px) {
-            .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        }
+        @media (min-width: 769px) { .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; } }
     </style>
 </head>
 <body>
 
 <div id="toast-message" class="toast-notify">
-    <i class="fa-solid fa-circle-check"></i> <span id="toast-text">Reward Claimed!</span>
+    <i id="toast-icon" class="fa-solid fa-circle-check"></i> <span id="toast-text">Reward Claimed!</span>
 </div>
 
 <div class="bg-glow" style="top: 5%; left: 5%;"></div>
@@ -192,7 +185,6 @@
                 <div class="chart-header">
                     <h3 style="font-size: 14px; letter-spacing: 0.5px;">RS / USDT <small style="color: #888;">Tapro Realtime Price</small></h3>
                 </div>
-                
                 <div class="price-tracker-box">
                     <div class="status-badge">
                         <i class="fa-solid fa-circle-nodes"></i> Verified Smart Contract Pool
@@ -206,7 +198,6 @@
 
             <div class="panel-card" style="margin-top: 15px; margin-bottom: 15px;">
                 <h3 style="font-size: 15px;"><i class="fa-solid fa-calendar-check" style="color: var(--neon-blue); margin-right: 6px;"></i> 7-DAY REWARD STREAK</h3>
-                
                 <div class="streak-container">
                     <div class="streak-day" id="st-day1"><span class="streak-title">Day 1</span><span class="streak-val">+10</span></div>
                     <div class="streak-day" id="st-day2"><span class="streak-title">Day 2</span><span class="streak-val">+20</span></div>
@@ -216,7 +207,6 @@
                     <div class="streak-day" id="st-day6"><span class="streak-title">Day 6</span><span class="streak-val">+100</span></div>
                     <div class="streak-day mega" id="st-day7"><span class="streak-title" style="color:var(--gold);">Day 7 MEGA</span><span class="streak-val">+250</span></div>
                 </div>
-
                 <div class="claim-btn-container">
                     <button id="claim-streak-btn" class="btn-action" style="width: 100%; max-width: 200px;" onclick="claimDailyStreak()">CLAIM TODAY'S REWARD</button>
                 </div>
@@ -269,7 +259,6 @@
         if (isLoggedIn === 'true') {
             launchDashboard();
         } else {
-            // ලොග් වෙලා නැත්නම් කෙලින්ම Auth එක විතරක් පෙන්වනවා
             document.getElementById('auth-screen').style.display = 'flex';
             document.getElementById('dashboard-screen').style.display = 'none';
         }
@@ -278,8 +267,10 @@
     function handleAuth() {
         let email = document.getElementById('auth-email').value.trim();
         let pass = document.getElementById('auth-password').value.trim();
-        if (email === "" || !email.includes("@") || pass.length < 4) {
-            alert("Please enter a valid email and a password.");
+        
+        // Validation ලිහිල් කළා - දැන් ඕනෑම දිගක පාස්වර්ඩ් එකක් වැඩ
+        if (email === "" || !email.includes("@") || pass === "") {
+            showToast("Please enter a valid email and password!", true);
             return;
         }
         localStorage.setItem('web_crs_logged_in', 'true');
@@ -287,16 +278,10 @@
         launchDashboard();
     }
 
-    // LOGOUT FUNCTION ENGINE
     function handleLogout() {
-        // බ්‍රවුසර් මෙමරියේ තියෙන ලොගින් ස්ටේටස් එක අයින් කරනවා
         localStorage.removeItem('web_crs_logged_in');
-        
-        // ආයෙත් පරණ තැනටම රීලෝඩ් කරනවා
         document.getElementById('dashboard-screen').style.display = 'none';
         document.getElementById('auth-screen').style.display = 'flex';
-        
-        // ඉන්පුට් ෆීල්ඩ්ස් හිස් කරනවා
         document.getElementById('auth-email').value = "";
         document.getElementById('auth-password').value = "";
     }
@@ -305,7 +290,6 @@
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('dashboard-screen').style.display = 'block';
         document.getElementById('crs-balance').innerText = balance.toFixed(2);
-        
         updateStreakUI();
         fetchNodePrice();
         setInterval(fetchNodePrice, 12000);
@@ -316,14 +300,10 @@
             let el = document.getElementById('st-day' + i);
             if(el) {
                 el.classList.remove('active', 'claimed');
-                if(i < currentStreak) {
-                    el.classList.add('claimed');
-                } else if(i === currentStreak) {
-                    el.classList.add('active');
-                }
+                if(i < currentStreak) el.classList.add('claimed');
+                else if(i === currentStreak) el.classList.add('active');
             }
         }
-
         let todayStr = new Date().toDateString();
         let btn = document.getElementById('claim-streak-btn');
         if(lastClaimDate === todayStr) {
@@ -338,32 +318,34 @@
     function claimDailyStreak() {
         let todayStr = new Date().toDateString();
         if(lastClaimDate === todayStr) {
-            showToast("You already claimed today's reward!");
+            showToast("You already claimed today's reward!", true);
             return;
         }
-
         let rewardAmount = streakRewards[currentStreak - 1];
         balance += rewardAmount;
-        
         localStorage.setItem('web_crs_balance', balance);
         localStorage.setItem('web_crs_last_claim_date', todayStr);
-        
         document.getElementById('crs-balance').innerText = balance.toFixed(2);
         showToast(`Successfully Claimed +${rewardAmount} CRS!`);
-
-        if(currentStreak >= 7) {
-            currentStreak = 1;
-        } else {
-            currentStreak++;
-        }
+        if(currentStreak >= 7) currentStreak = 1;
+        else currentStreak++;
         localStorage.setItem('web_crs_streak_day', currentStreak);
-        
         updateStreakUI();
     }
 
-    function showToast(text) {
+    function showToast(text, isError = false) {
         let toast = document.getElementById('toast-message');
+        let icon = document.getElementById('toast-icon');
         document.getElementById('toast-text').innerText = text;
+        
+        if(isError) {
+            toast.classList.add('error-toast');
+            icon.className = "fa-solid fa-circle-exclamation";
+        } else {
+            toast.classList.remove('error-toast');
+            icon.className = "fa-solid fa-circle-check";
+        }
+        
         toast.classList.add('show');
         setTimeout(() => { toast.classList.remove('show'); }, 3500);
     }
@@ -373,29 +355,22 @@
             let res = await fetch("https://api.coingecko.com/api/v3/simple/token_price/binance-smart-chain?contract_addresses=0x0d3e239e2486d3701bc25c9b986b6a22c676c12c&vs_currencies=usd&include_24hr_change=true");
             let data = await res.json();
             let tokenData = data["0x0d3e239e2486d3701bc25c9b986b6a22c676c12c"];
-            
             if(tokenData && tokenData.usd > 0) {
                 document.getElementById('node-live-price').innerText = "$" + tokenData.usd.toFixed(8);
                 let change = tokenData.usd_24h_change || 0;
                 let changeEl = document.getElementById('node-24h-change');
-                if(change >= 0) {
-                    changeEl.innerHTML = `<span style="color:#00ff88;"><i class="fa-solid fa-caret-up"></i> +${change.toFixed(2)}%</span> (24h)`;
-                } else {
-                    changeEl.innerHTML = `<span style="color:#ff4a4a;"><i class="fa-solid fa-caret-down"></i> ${change.toFixed(2)}%</span> (24h)`;
-                }
+                if(change >= 0) changeEl.innerHTML = `<span style="color:#00ff88;"><i class="fa-solid fa-caret-up"></i> +${change.toFixed(2)}%</span> (24h)`;
+                else changeEl.innerHTML = `<span style="color:#ff4a4a;"><i class="fa-solid fa-caret-down"></i> ${change.toFixed(2)}%</span> (24h)`;
                 return;
             }
         } catch(e) {}
-        
         let basePrice = 0.0000008412; 
         let dynamicChange = (Math.random() - 0.5) * 0.0000000030;
         let finalPrice = basePrice + dynamicChange;
-        
         document.getElementById('node-live-price').innerText = "$" + finalPrice.toFixed(8);
         document.getElementById('node-24h-change').innerHTML = `<span style="color:#00ff88;"><i class="fa-solid fa-caret-up"></i> +1.82%</span> (Live Pool)`;
     }
 
-    // --- LIVE FEED ---
     const names = ["Nalin99", "Crypto_King", "Shalu_R", "Sampath_X", "Amila_Dev"];
     setInterval(() => {
         const feeds = document.getElementById('activity-feed');
@@ -406,4 +381,7 @@
         div.className = 'feed-item';
         div.innerHTML = `<b>${name}</b> won <b>${win} CRS</b>`;
         feeds.prepend(div);
-        if (fe
+        if (feeds.children.length > 4) feeds.lastChild.remove();
+    }, 4000);
+
+    
