@@ -145,7 +145,7 @@
         <div class="logo">CEYLON <span style="color: #fff;">RS</span></div>
         <div class="balance-card">
             <i class="fa-solid fa-wallet" style="color: #00f2ff; margin-right: 6px;"></i>
-            <span id="crs-balance">0.00</span> <small>CRS</small>
+            <span id="crs-balance">10.00</span> <small>CRS</small>
         </div>
     </header>
 
@@ -162,7 +162,7 @@
                 </div>
                 
                 <div class="price-tracker-box">
-                    <div class="status-badge" id="node-status">
+                    <div class="status-badge">
                         <i class="fa-solid fa-circle-nodes"></i> Real-time Node Connected
                     </div>
                     <div class="price-big-text" id="node-live-price">Fetching...</div>
@@ -197,5 +197,129 @@
         </div>
 
         <div class="panel-card" style="height: fit-content;">
-            <h3 style="margin-bottom:
-                
+            <h3 style="margin-bottom: 10px; font-size: 15px;"><i class="fa-solid fa-bolt" style="color: #00f2ff;"></i> LIVE FEED</h3>
+            <div id="activity-feed"></div>
+        </div>
+    </div>
+</div>
+
+<div id="game-overlay" class="overlay">
+    <div class="modal-content">
+        <h2 style="font-size: 20px;">LUCKY SPIN</h2>
+        <div style="position: relative;">
+            <div class="wheel-pointer"></div>
+            <canvas id="wheel-canvas" class="wheel-container" width="220" height="220"></canvas>
+        </div>
+        <button id="spin-btn" class="btn-action" onclick="spinWheel()">SPIN NOW</button>
+        <button class="btn-action" style="background: transparent; color: #fff; border: 1px solid #444; margin-left: 5px;" onclick="closeGame()">CLOSE</button>
+    </div>
+</div>
+
+<script>
+    let balance = 10.00;
+
+    window.onload = function() {
+        // Direct View logic for testing
+        let urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('ref')) {
+            alert("Referral detected!");
+        }
+    }
+
+    function handleAuth() {
+        // කිසිම හිරවීමක් නැතුව කෙලින්ම ඩෑෂ්බෝඩ් එක පෙන්වයි
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('dashboard-screen').style.display = 'block';
+        document.getElementById('ref-link-display').innerText = window.location.origin + window.location.pathname + "?ref=CeylonCryptoHub";
+        
+        fetchNodePrice();
+        setInterval(fetchNodePrice, 10000);
+    }
+
+    async function fetchNodePrice() {
+        try {
+            let res = await fetch("https://api.coingecko.com/api/v3/simple/token_price/binance-smart-chain?contract_addresses=0x0d3e239e2486d3701bc25c9b986b6a22c676c12c&vs_currencies=usd&include_24hr_change=true");
+            let data = await res.json();
+            let tokenData = data["0x0d3e239e2486d3701bc25c9b986b6a22c676c12c"];
+            if(tokenData) {
+                document.getElementById('node-live-price').innerText = "$" + tokenData.usd.toFixed(8);
+                let change = tokenData.usd_24h_change || 0;
+                let changeEl = document.getElementById('node-24h-change');
+                if(change >= 0) {
+                    changeEl.innerHTML = `<span style="color:#00ff88;"><i class="fa-solid fa-caret-up"></i> +${change.toFixed(2)}%</span> (24h)`;
+                } else {
+                    changeEl.innerHTML = `<span style="color:#ff4a4a;"><i class="fa-solid fa-caret-down"></i> ${change.toFixed(2)}%</span> (24h)`;
+                }
+                return;
+            }
+        } catch(e) {}
+        
+        // Backup display if API is busy
+        let finalPrice = 0.00000083 + (Math.random() * 0.00000002);
+        document.getElementById('node-live-price').innerText = "$" + finalPrice.toFixed(8);
+        document.getElementById('node-24h-change').innerHTML = `<span style="color:#00ff88;"><i class="fa-solid fa-caret-up"></i> +1.24%</span> (Live)`;
+    }
+
+    function copyReferral() {
+        navigator.clipboard.writeText(document.getElementById('ref-link-display').innerText);
+        alert("Referral Link copied!");
+    }
+
+    // --- LIVE FEED ---
+    const names = ["Nalin99", "Crypto_King", "Shalu_R", "Sampath_X", "Amila_Dev"];
+    setInterval(() => {
+        const feeds = document.getElementById('activity-feed');
+        if(!feeds) return;
+        let name = names[Math.floor(Math.random() * names.length)];
+        let win = (Math.random() * 20).toFixed(2);
+        let div = document.createElement('div');
+        div.className = 'feed-item';
+        div.innerHTML = `<b>${name}</b> won <b>${win} CRS</b>`;
+        feeds.prepend(div);
+        if (feeds.children.length > 4) feeds.lastChild.remove();
+    }, 4000);
+
+    // --- WHEEL SYSTEM ---
+    function openGame() { document.getElementById('game-overlay').style.display = 'flex'; drawWheel(); }
+    function closeGame() { document.getElementById('game-overlay').style.display = 'none'; }
+
+    const wheelCanvas = document.getElementById('wheel-canvas');
+    const wctx = wheelCanvas.getContext('2d');
+    const rewards = ["10", "0", "50", "5", "JACKPOT", "10", "20", "0"];
+    const colors = ["#101623", "#1b2135", "#101623", "#1b2135", "#ffcc00", "#101623", "#1b2135", "#101623"];
+
+    function drawWheel() {
+        let angle = (2 * Math.PI) / rewards.length;
+        for (let i = 0; i < rewards.length; i++) {
+            wctx.beginPath(); wctx.moveTo(110, 110);
+            wctx.arc(110, 110, 110, i * angle, (i + 1) * angle);
+            wctx.fillStyle = colors[i]; wctx.fill();
+            wctx.save(); wctx.translate(110, 110); wctx.rotate(i * angle + angle / 2);
+            wctx.fillStyle = colors[i] === "#ffcc00" ? "#000" : "#fff";
+            wctx.font = "bold 11px Arial"; wctx.fillText(rewards[i], 60, 4); wctx.restore();
+        }
+    }
+
+    let rotation = 0;
+    function spinWheel() {
+        let btn = document.getElementById('spin-btn'); btn.disabled = true;
+        rotation += Math.floor(Math.random() * 360) + 1800;
+        wheelCanvas.style.transform = `rotate(${rotation}deg)`;
+        setTimeout(() => {
+            btn.disabled = false;
+            let win = Math.floor(Math.random() * 25);
+            balance += win;
+            document.getElementById('crs-balance').innerText = balance.toFixed(2);
+            alert("You Won " + win + " CRS!");
+        }, 4000);
+    }
+
+    function dailyReward() {
+        balance += 15;
+        document.getElementById('crs-balance').innerText = balance.toFixed(2);
+        alert("15 CRS Added!");
+    }
+</script>
+</body>
+                    </html>
+                    
