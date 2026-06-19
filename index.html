@@ -27,26 +27,7 @@
             filter: blur(40px); z-index: -1;
         }
 
-        /* --- AUTH SCREEN --- */
-        #auth-screen {
-            position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg);
-            display: flex; justify-content: center; align-items: center; z-index: 999; padding: 15px;
-        }
-        .auth-card {
-            background: var(--card); padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 360px;
-            text-align: center; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px);
-        }
-        .auth-card h1 { font-size: 28px; font-weight: 900; letter-spacing: 2px; margin-bottom: 8px; color: var(--neon-blue); }
-        .auth-card p { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
-        .auth-input {
-            width: 100%; padding: 14px; margin-bottom: 14px; border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0,0,0,0.4);
-            color: white; font-size: 14px; outline: none;
-        }
-        .auth-input:focus { border-color: var(--neon-blue); }
-
-        /* --- MAIN DASHBOARD INTERFACE --- */
-        #dashboard-screen { display: none; }
+        /* --- HEADER INTERFACE --- */
         .header {
             padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
             background: rgba(10, 15, 28, 0.9); border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -56,18 +37,12 @@
         
         .header-right { display: flex; align-items: center; gap: 10px; }
         .balance-card { background: rgba(255,255,255,0.05); padding: 6px 16px; border-radius: 50px; border: 1px solid var(--neon-blue); font-size: 14px; font-weight: bold; }
-        
-        .logout-btn {
-            background: rgba(255, 74, 74, 0.1); color: var(--danger); border: 1px solid rgba(255, 74, 74, 0.2);
-            width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: 0.3s;
-        }
-        .logout-btn:hover { background: var(--danger); color: white; }
 
         .main-grid { display: flex; flex-direction: column; gap: 15px; padding: 15px; max-width: 1200px; margin: auto; }
         .panel-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 
+        /* Price Tracker Box */
         .price-tracker-box {
             background: linear-gradient(135deg, rgba(0, 242, 255, 0.05), rgba(112, 0, 255, 0.02));
             border: 1px solid rgba(0, 242, 255, 0.15); border-radius: 16px; padding: 25px 20px; text-align: center; margin-top: 5px;
@@ -155,16 +130,6 @@
 <div class="bg-glow" style="top: 5%; left: 5%;"></div>
 <div class="bg-glow" style="bottom: 5%; right: 5%;"></div>
 
-<div id="auth-screen">
-    <div class="auth-card">
-        <h1>TAPRO CRS</h1>
-        <p>Login to your secure gaming dashboard</p>
-        <input type="email" id="auth-email" class="auth-input" placeholder="Enter Gmail Address">
-        <input type="password" id="auth-password" class="auth-input" placeholder="Access Password">
-        <button class="btn-action" style="width: 100%; margin-top: 5px;" onclick="handleAuth()">ENTER DASHBOARD</button>
-    </div>
-</div>
-
 <div id="dashboard-screen">
     <header class="header">
         <div class="logo">TAPRO <span style="color: #fff;">CRS</span></div>
@@ -172,9 +137,6 @@
             <div class="balance-card">
                 <i class="fa-solid fa-wallet" style="color: #00f2ff; margin-right: 6px;"></i>
                 <span id="crs-balance">10.00</span> <small>CRS</small>
-            </div>
-            <div class="logout-btn" title="Logout" onclick="handleLogout()">
-                <i class="fa-solid fa-right-from-bracket"></i>
             </div>
         </div>
     </header>
@@ -255,46 +217,14 @@
     const streakRewards = [10, 20, 35, 50, 75, 100, 250];
 
     window.onload = function() {
-        let isLoggedIn = localStorage.getItem('web_crs_logged_in');
-        if (isLoggedIn === 'true') {
-            launchDashboard();
-        } else {
-            document.getElementById('auth-screen').style.display = 'flex';
-            document.getElementById('dashboard-screen').style.display = 'none';
-        }
-    }
-
-    function handleAuth() {
-        let email = document.getElementById('auth-email').value.trim();
-        let pass = document.getElementById('auth-password').value.trim();
-        
-        // Validation ලිහිල් කළා - දැන් ඕනෑම දිගක පාස්වර්ඩ් එකක් වැඩ
-        if (email === "" || !email.includes("@") || pass === "") {
-            showToast("Please enter a valid email and password!", true);
-            return;
-        }
-        localStorage.setItem('web_crs_logged_in', 'true');
-        localStorage.setItem('web_crs_balance', balance);
-        launchDashboard();
-    }
-
-    function handleLogout() {
-        localStorage.removeItem('web_crs_logged_in');
-        document.getElementById('dashboard-screen').style.display = 'none';
-        document.getElementById('auth-screen').style.display = 'flex';
-        document.getElementById('auth-email').value = "";
-        document.getElementById('auth-password').value = "";
-    }
-
-    function launchDashboard() {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('dashboard-screen').style.display = 'block';
+        // කෙලින්ම ඩෑෂ්බෝඩ් එක පූට් කරනවා
         document.getElementById('crs-balance').innerText = balance.toFixed(2);
         updateStreakUI();
         fetchNodePrice();
         setInterval(fetchNodePrice, 12000);
     }
 
+    // ස්ට්‍රීක් අප්ඩේට් ඉංජිම
     function updateStreakUI() {
         for(let i = 1; i <= 7; i++) {
             let el = document.getElementById('st-day' + i);
@@ -350,6 +280,7 @@
         setTimeout(() => { toast.classList.remove('show'); }, 3500);
     }
 
+    // ලයිව් ප්‍රයිස් ඇදීම
     async function fetchNodePrice() {
         try {
             let res = await fetch("https://api.coingecko.com/api/v3/simple/token_price/binance-smart-chain?contract_addresses=0x0d3e239e2486d3701bc25c9b986b6a22c676c12c&vs_currencies=usd&include_24hr_change=true");
@@ -384,4 +315,40 @@
         if (feeds.children.length > 4) feeds.lastChild.remove();
     }, 4000);
 
-    
+    // ලකී ස්පින් ගේම් එක
+    function openGame() { document.getElementById('game-overlay').style.display = 'flex'; drawWheel(); }
+    function closeGame() { document.getElementById('game-overlay').style.display = 'none'; }
+    const wheelCanvas = document.getElementById('wheel-canvas');
+    const wctx = wheelCanvas.getContext('2d');
+    const rewards = ["10", "0", "50", "5", "JACKPOT", "10", "20", "0"];
+    const colors = ["#101623", "#1b2135", "#101623", "#1b2135", "#ffcc00", "#101623", "#1b2135", "#101623"];
+
+    function drawWheel() {
+        let angle = (2 * Math.PI) / rewards.length;
+        for (let i = 0; i < rewards.length; i++) {
+            wctx.beginPath(); wctx.moveTo(110, 110);
+            wctx.arc(110, 110, 110, i * angle, (i + 1) * angle);
+            wctx.fillStyle = colors[i]; wctx.fill();
+            wctx.save(); wctx.translate(110, 110); wctx.rotate(i * angle + angle / 2);
+            wctx.fillStyle = colors[i] === "#ffcc00" ? "#000" : "#fff";
+            wctx.font = "bold 11px Arial"; wctx.fillText(rewards[i], 60, 4); wctx.restore();
+        }
+    }
+
+    let rotation = 0;
+    function spinWheel() {
+        let btn = document.getElementById('spin-btn'); btn.disabled = true;
+        rotation += Math.floor(Math.random() * 360) + 1800;
+        wheelCanvas.style.transform = `rotate(${rotation}deg)`;
+        setTimeout(() => {
+            btn.disabled = false;
+            let win = Math.floor(Math.random() * 25);
+            balance += win;
+            localStorage.setItem('web_crs_balance', balance);
+            document.getElementById('crs-balance').innerText = balance.toFixed(2);
+            showToast(`Lucky Spin Won +${win} CRS!`);
+        }, 4000);
+    }
+</script>
+</body>
+</html>
