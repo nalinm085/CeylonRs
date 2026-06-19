@@ -1,37 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAPRO CRS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body { background: #050810; color: #fff; font-family: sans-serif; text-align: center; }
-.box { padding: 20px; }
-button { padding: 15px 30px; background: #00f2ff; border: none; border-radius: 50px; cursor: pointer; }
+:root{--bg:#050810;--neon:#00f2ff;} body{background:var(--bg);color:#fff;font-family:sans-serif;}
+.container{padding:15px;max-width:600px;margin:auto;}
+.card{background:rgba(16,22,35,0.8);padding:20px;margin-bottom:15px;border-radius:20px;border:1px solid #222;}
+.btn{width:100%;padding:15px;background:linear-gradient(90deg,#00f2ff,#7000ff);border:none;border-radius:50px;color:#fff;font-weight:bold;margin-top:10px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 </style>
 </head>
 <body>
-<div id="login" class="box">
-    <h1>TAPRO CRS</h1>
-    <button onclick="enter()">ENTER DASHBOARD</button>
+<div class="container">
+<header><h2>TAPRO <span style="color:var(--neon)">CRS</span></h2></header>
+<div class="card"><h3>Balance: <span id="crs-balance">103.00</span> CRS</h3></div>
+<div class="card"><h3>Solana Price</h3><h2 id="node-live-price">Fetching...</h2></div>
+<div class="card"><h3>Daily Streak</h3>
+<div class="grid" id="streak"></div>
+<button class="btn" onclick="claimStreak()">CLAIM REWARD</button>
 </div>
-<div id="dash" class="box" style="display:none;">
-    <h1>Balance: <span id="bal">103.00</span> CRS</h1>
-    <h2 id="price">Price: Loading...</h2>
+<div class="card"><h3>Games</h3>
+<button class="btn" onclick="openGame()">LUCKY MATRIX</button>
+</div>
+<div id="game-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;padding:20px;">
+<h3>LUCKY MATRIX</h3>
+<div class="grid" id="matrix"></div>
+<button class="btn" onclick="closeGame()">CLOSE</button>
 </div>
 <script>
-let balance = 103.00;
-function enter() {
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('dash').style.display = 'block';
-    getPrice();
+let balance=103.00;
+async function fetchPrice(){
+try{
+let res=await fetch("https://api.dexscreener.com/latest/dex/tokens/HQPMEbkZmwxCscm6wQmDXc5Ywyft7aRsbKdooh6Ldr8a");
+let d=await res.json();
+document.getElementById('node-live-price').innerText="$"+d.pairs[0].priceUsd;
+}catch(e){document.getElementById('node-live-price').innerText="$0.00084";}
 }
-async function getPrice() {
-    try {
-        let res = await fetch("https://api.dexscreener.com/latest/dex/tokens/HQPMEbkZmwxCscm6wQmDXc5Ywyft7aRsbKdooh6Ldr8a");
-        let data = await res.json();
-        let p = data.pairs[0].priceUsd;
-        document.getElementById('price').innerText = "Price: $" + p;
-    } catch(e) { document.getElementById('price').innerText = "Price: $0.00084"; }
+fetchPrice();
+function openGame(){document.getElementById('game-overlay').style.display='block';}
+function closeGame(){document.getElementById('game-overlay').style.display='none';}
+function claimStreak(){
+balance+=50; 
+document.getElementById('crs-balance').innerText=balance.toFixed(2);
+alert("Reward Claimed!");
 }
 </script>
+    <script>
+// Lucky Matrix grid generation
+let m=document.getElementById('matrix');
+for(let i=0;i<8;i++){
+m.innerHTML+='<div class="card" onclick="win('+i+')">?</div>';
+}
+function win(i){
+let w=Math.floor(Math.random()*100);
+balance+=w;
+document.getElementById('crs-balance').innerText=balance.toFixed(2);
+alert("You won "+w+" CRS!");
+}
+</script>
+</div>
 </body>
 </html>
+
