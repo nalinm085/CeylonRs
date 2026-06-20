@@ -82,10 +82,6 @@
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; }
         .modal-content { background: #101623; padding: 30px 20px; border-radius: 24px; text-align: center; max-width: 340px; width: 90%; border: 1px solid rgba(255,255,255,0.08); }
 
-        /* Spin Wheel Dynamic */
-        .wheel-container { width: 220px; height: 220px; border: 4px solid #fff; border-radius: 50%; margin: 15px auto; position: relative; transition: 4s cubic-bezier(0.1, 0.9, 0.1, 1); }
-        .wheel-pointer { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 16px; height: 24px; background: red; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
-
         .btn-action {
             background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
             color: black; border: none; padding: 12px 28px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px;
@@ -146,17 +142,17 @@
             </div>
 
             <div class="game-grid">
-                <div class="game-card" onclick="openGameWithAd()">
-                    <i class="fa-solid fa-circle-dot"></i>
-                    <h4>LUCKY SPIN</h4>
+                <div class="game-card" onclick="openTapper()">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                    <h4>CRS TAPPER</h4>
                 </div>
-                <div class="game-card" onclick="openGameWithAd()">
-                    <i class="fa-solid fa-burst"></i>
-                    <h4>CRS MINES</h4>
+                <div class="game-card" onclick="openSafe()">
+                    <i class="fa-solid fa-lock"></i>
+                    <h4>SAFE CRACKER</h4>
                 </div>
-                <div class="game-card" onclick="openGameWithAd()">
-                    <i class="fa-solid fa-ticket"></i>
-                    <h4>SCRATCH</h4>
+                <div class="game-card" onclick="openPredict()">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <h4>TRADE PREDICT</h4>
                 </div>
             </div>
         </div>
@@ -169,28 +165,139 @@
 </div>
 
 <div id="game-overlay" class="overlay">
-    <div class="modal-content">
-        <h2 style="font-size: 20px;">LUCKY SPIN</h2>
-        <div style="position: relative;">
-            <div class="wheel-pointer"></div>
-            <canvas id="wheel-canvas" class="wheel-container" width="220" height="220"></canvas>
+    <div class="modal-content" id="dynamic-game-content">
         </div>
-        <button id="spin-btn" class="btn-action" onclick="spinWheel()">SPIN NOW</button>
-        <button class="btn-action" style="background: transparent; color: #fff; border: 1px solid #444; margin-left: 5px;" onclick="closeGame()">CLOSE</button>
-    </div>
 </div>
 
 <script>
-    // අලුත් Function එක මෙතන තියෙනවා
-    function openGameWithAd() {
-        if (!localStorage.getItem('ad_shown')) {
-            window.open('https://www.effectivecpmnetwork.com/ci8tnjgpix?key=4b92b8ccd2f66278e89d64a99e5eacf0', '_blank');
-            localStorage.setItem('ad_shown', 'true');
-        }
-        // ගේම් එක ඕපන් වෙන්න කලින් තිබ්බ ක්‍රියාව (Original function call)
-        openGame();
+    // --- ADSTERRA AD ENGINE (Smart Popup System) ---
+    const AD_LINK = "https://www.effectivecpmnetwork.com/ci8tnjgpix?key=4b92b8ccd2f66278e89d64a99e5eacf0";
+    
+    function triggerAd() {
+        // බ්ලොක් නොවී අලුත් ටැබ් එකකින් සයිලන්ට් ඇඩ් එකක් ඕපන් කරයි
+        window.open(AD_LINK, '_blank');
     }
 
+    // --- GAME ENGINE ---
+    function openModal(htmlContent) {
+        document.getElementById('dynamic-game-content').innerHTML = htmlContent;
+        document.getElementById('game-overlay').style.display = 'flex';
+    }
+    
+    function closeGame() {
+        document.getElementById('game-overlay').style.display = 'none';
+    }
+
+    function updateBalDisplay() {
+        localStorage.setItem('web_crs_balance', balance);
+        document.getElementById('crs-balance').innerText = balance.toFixed(2);
+    }
+
+    // GAME 1: CRS TAPPER
+    let tapCount = 0;
+    function openTapper() {
+        tapCount = 0;
+        let html = `
+            <h2 style="font-size: 20px; color: var(--neon-blue); margin-bottom: 5px;">CRS TAPPER</h2>
+            <p style="font-size: 12px; color: #ccc; margin-bottom: 20px;">Tap fast! Claim points to open bonus Ad.</p>
+            <div style="font-size: 60px; margin: 20px 0; cursor: pointer; user-select: none; transition: 0.1s;" onclick="tapCoin(this)">🪙</div>
+            <h3 id="tap-score" style="margin-bottom: 15px;">0 TAPS</h3>
+            <button class="btn-action" style="width: 100%; margin-bottom: 10px;" onclick="claimTaps()">CLAIM POINTS</button>
+            <button class="btn-action" style="background: transparent; color: #fff; border: 1px solid #444; width: 100%;" onclick="closeGame()">CLOSE</button>
+        `;
+        openModal(html);
+    }
+
+    function tapCoin(el) {
+        tapCount++;
+        document.getElementById('tap-score').innerText = tapCount + " TAPS";
+        el.style.transform = "scale(0.9)";
+        setTimeout(() => el.style.transform = "scale(1)", 100);
+    }
+
+    function claimTaps() {
+        if (tapCount < 10) {
+            alert("Tap at least 10 times to claim!");
+            return;
+        }
+        triggerAd(); // සල්ලි ගන්නකොට ඇඩ් එක ප්ලේ වෙනවා (ස්වභාවිකයි)
+        let earned = tapCount * 0.15; // එක tap එකකට 0.15 CRS
+        balance += earned;
+        updateBalDisplay();
+        alert(`You successfully mined ${earned.toFixed(2)} CRS!`);
+        tapCount = 0;
+        document.getElementById('tap-score').innerText = "0 TAPS";
+    }
+
+    // GAME 2: SAFE CRACKER
+    let safePlays = 0;
+    function openSafe() {
+        let html = `
+            <h2 style="font-size: 20px; color: #00ff88; margin-bottom: 5px;">SAFE CRACKER</h2>
+            <p style="font-size: 12px; color: #ccc; margin-bottom: 20px;">Guess the PIN (1 to 5) to win 5 CRS.</p>
+            <input type="number" id="safe-pin" style="width: 80%; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.5); border: 1px solid #00ff88; color: white; text-align: center; font-size: 20px; margin-bottom: 15px; outline: none;" placeholder="Enter PIN">
+            <button class="btn-action" style="width: 100%; margin-bottom: 10px; background: linear-gradient(90deg, #00ff88, #0088ff);" onclick="crackSafe()">UNLOCK SAFE</button>
+            <button class="btn-action" style="background: transparent; color: #fff; border: 1px solid #444; width: 100%;" onclick="closeGame()">CLOSE</button>
+        `;
+        openModal(html);
+    }
+
+    function crackSafe() {
+        let guess = document.getElementById('safe-pin').value;
+        if (!guess || guess < 1 || guess > 5) return alert("Enter a number between 1 and 5!");
+        
+        safePlays++;
+        if (safePlays % 2 === 0) triggerAd(); // හැම වාර 2කට වරක්ම ඇඩ් එකක්
+
+        let secret = Math.floor(Math.random() * 5) + 1;
+        if (parseInt(guess) === secret) {
+            balance += 5;
+            updateBalDisplay();
+            alert("✅ UNLOCKED! You found the right PIN and won 5 CRS.");
+        } else {
+            alert("❌ WRONG PIN! The correct PIN was " + secret);
+        }
+    }
+
+    // GAME 3: TRADE PREDICT
+    let currentPrice = 100;
+    let tradePlays = 0;
+    function openPredict() {
+        currentPrice = Math.floor(Math.random() * 100) + 50;
+        let html = `
+            <h2 style="font-size: 20px; color: var(--neon-purple); margin-bottom: 5px;">TRADE PREDICT</h2>
+            <p style="font-size: 12px; color: #ccc; margin-bottom: 15px;">Will the next price be Higher or Lower?</p>
+            <h1 id="trade-price" style="font-size: 35px; color: white; margin-bottom: 20px;">$${currentPrice}</h1>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                <button class="btn-action" style="flex: 1; background: #00ff88; color: black;" onclick="predictTrade('hi')">HIGHER 📈</button>
+                <button class="btn-action" style="flex: 1; background: #ff3366; color: white;" onclick="predictTrade('lo')">LOWER 📉</button>
+            </div>
+            <button class="btn-action" style="background: transparent; color: #fff; border: 1px solid #444; width: 100%;" onclick="closeGame()">CLOSE</button>
+        `;
+        openModal(html);
+    }
+
+    function predictTrade(choice) {
+        tradePlays++;
+        if (tradePlays % 3 === 0) triggerAd(); // හැම වාර 3කට වරක්ම ඇඩ් එකක්
+
+        let nextPrice = Math.floor(Math.random() * 100) + 50;
+        let isHigher = nextPrice >= currentPrice;
+        let win = (choice === 'hi' && isHigher) || (choice === 'lo' && !isHigher);
+        
+        currentPrice = nextPrice;
+        document.getElementById('trade-price').innerText = "$" + currentPrice;
+
+        if (win) {
+            balance += 3;
+            updateBalDisplay();
+            alert("✅ CORRECT PREDICTION! You won 3 CRS.");
+        } else {
+            alert("❌ WRONG! The market went the other way.");
+        }
+    }
+
+    // --- DASHBOARD & CORE LOGIC (UNCHANGED) ---
     const REFERRAL_REWARD_POINTS = 50.00;
     let balance = parseFloat(localStorage.getItem('web_crs_balance')) || 0.00;
     let currentUser = localStorage.getItem('web_crs_user') || "";
@@ -216,7 +323,7 @@
     function showDashboard() {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('dashboard-screen').style.display = 'block';
-        document.getElementById('crs-balance').innerText = balance.toFixed(2);
+        updateBalDisplay();
         
         let username = "CeylonCryptoHub";
         document.getElementById('ref-link-display').innerText = window.location.origin + window.location.pathname + "?ref=" + username;
@@ -228,7 +335,7 @@
         const referrer = urlParams.get('ref');
         if (referrer && !localStorage.getItem('web_crs_referred_done')) {
             balance += REFERRAL_REWARD_POINTS;
-            localStorage.setItem('web_crs_balance', balance);
+            updateBalDisplay();
             localStorage.setItem('web_crs_referred_done', 'true');
             alert(`Welcome! You received ${REFERRAL_REWARD_POINTS} CRS via Referral from ${referrer}!`);
         }
@@ -293,44 +400,6 @@
     }
     setInterval(addFeed, 5000);
 
-    function openGame() { document.getElementById('game-overlay').style.display = 'flex'; drawWheel(); }
-    function closeGame() { document.getElementById('game-overlay').style.display = 'none'; }
-
-    const wheelCanvas = document.getElementById('wheel-canvas');
-    const wctx = wheelCanvas.getContext('2d');
-    const rewards = ["10", "0", "50", "5", "JACKPOT", "10", "20", "0"];
-    const colors = ["#101623", "#1b2135", "#101623", "#1b2135", "#ffcc00", "#101623", "#1b2135", "#101623"];
-
-    function drawWheel() {
-        let angle = (2 * Math.PI) / rewards.length;
-        for (let i = 0; i < rewards.length; i++) {
-            wctx.beginPath(); wctx.moveTo(110, 110);
-            wctx.arc(110, 110, 110, i * angle, (i + 1) * angle);
-            wctx.fillStyle = colors[i]; wctx.fill();
-            wctx.save(); wctx.translate(110, 110); wctx.rotate(i * angle + angle / 2);
-            wctx.fillStyle = colors[i] === "#ffcc00" ? "#000" : "#fff";
-            wctx.font = "bold 11px Arial"; wctx.fillText(rewards[i], 60, 4); wctx.restore();
-        }
-    }
-
-    let rotation = 0;
-    function spinWheel() {
-        let btn = document.getElementById('spin-btn');
-        btn.disabled = true;
-        let extraRot = Math.floor(Math.random() * 360) + 1800;
-        rotation += extraRot;
-        wheelCanvas.style.transform = `rotate(${rotation}deg)`;
-        
-        setTimeout(() => {
-            btn.disabled = false;
-            let win = Math.floor(Math.random() * 25);
-            balance += win;
-            localStorage.setItem('web_crs_balance', balance);
-            document.getElementById('crs-balance').innerText = balance.toFixed(2);
-            alert("You Won " + win + " CRS!");
-        }, 4000);
-    }
-
     function dailyReward() {
         let lastClaim = localStorage.getItem('web_crs_daily');
         let today = new Date().toDateString();
@@ -338,9 +407,9 @@
             alert("Already claimed today!");
         } else {
             balance += 15;
-            localStorage.setItem('web_crs_balance', balance);
+            updateBalDisplay();
             localStorage.setItem('web_crs_daily', today);
-            document.getElementById('crs-balance').innerText = balance.toFixed(2);
+            triggerAd(); // Daily රිවෝඩ් එක ගන්නකොටත් ඇඩ් එකක් දෙනවා
             alert("15 CRS added successfully!");
         }
     }
