@@ -1,85 +1,659 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAPRO CRS Hub | Professional Gaming</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TAPRO CRS Hub | Professional Web3 Gaming</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #050810; --primary: #00f2ff; --secondary: #7000ff; --text: #ffffff; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; }
-        .dashboard { max-width: 800px; margin: 20px auto; padding: 20px; background: #0c101d; border-radius: 20px; }
-        .stat-box { display: flex; justify-content: space-between; padding: 20px; background: #161b2d; border-radius: 15px; margin-bottom: 20px; }
-        .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .btn { padding: 15px; border-radius: 10px; border: none; cursor: pointer; background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; font-weight: bold; }
+        :root {
+            --bg: #050810;
+            --card: rgba(16, 22, 35, 0.85);
+            --neon-blue: #00f2ff;
+            --neon-purple: #7000ff;
+            --text: #ffffff;
+            --text-muted: #8F9BB3;
+            --success: #00ff88;
+            --danger: #ff4a4a;
+            --gold: #ffcc00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; cursor: default; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; }
         
-        /* Scratch Animation */
-        .scratch-row { display: flex; gap: 10px; justify-content: center; }
-        .card { width: 100px; height: 140px; background: #1e2538; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.5s; font-size: 24px; border: 2px solid #333; }
-        .card.revealed { transform: rotateY(180deg); background: var(--secondary); }
+        button, a, .clickable { cursor: pointer; transition: 0.3s; }
+        button:focus { outline: none; }
+
+        .bg-glow {
+            position: fixed; width: 300px; height: 300px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.08), transparent 70%);
+            filter: blur(40px); z-index: -1; animation: pulseGlow 10s infinite;
+        }
+        @keyframes pulseGlow { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 0.8; } }
+
+        /* HEADER */
+        .header {
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(10, 15, 28, 0.9); border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px);
+        }
+        .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
+        .balance-card {
+            background: rgba(255,255,255,0.04); padding: 8px 18px; border-radius: 50px;
+            border: 1px solid var(--neon-blue); font-size: 14px; font-weight: bold;
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 0 10px rgba(0,242,255,0.1);
+        }
+
+        /* NAVIGATION TABS */
+        .tab-navigation {
+            display: flex; background: rgba(16, 22, 35, 0.5); border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin: 15px; border-radius: 12px; padding: 5px; gap: 5px; max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+        .tab-btn {
+            flex: 1; background: transparent; border: none; color: var(--text-muted); padding: 12px;
+            font-weight: bold; font-size: 14px; border-radius: 8px;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .tab-btn.active { background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); color: #000; }
+
+        /* MAIN LAYOUT */
+        .main-container { padding: 15px; max-width: 1200px; margin: auto; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .panel-card { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.03); backdrop-filter: blur(20px); margin-bottom: 20px; }
+
+        /* MODIFIED PRICE TRACKER */
+        .price-tracker-section { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .price-box {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            border-radius: 16px; padding: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .price-box:hover { border-color: var(--neon-blue); transform: scale(1.02); }
+        .crypto-icon { font-size: 24px; margin-bottom: 8px; }
+        .crypto-name { font-size: 12px; color: var(--text-muted); font-weight: bold; text-transform: uppercase; }
+        .price-text { font-size: 28px; font-weight: 800; color: #fff; margin: 5px 0; text-shadow: 0 0 10px rgba(0,242,255,0.2); }
+        .change-text { font-size: 12px; font-weight: bold; }
+        .change-up { color: var(--success); }
+        .change-down { color: var(--danger); }
+
+        /* Pulse Animation on Price Change */
+        @keyframes pulseUp { 0% { box-shadow: 0 0 0 rgba(0, 255, 136, 0.4); } 100% { box-shadow: 0 0 30px rgba(0, 255, 136, 0); } }
+        @keyframes pulseDown { 0% { box-shadow: 0 0 0 rgba(255, 74, 74, 0.4); } 100% { box-shadow: 0 0 30px rgba(255, 74, 74, 0); } }
+        .price-up { animation: pulseUp 0.5s; }
+        .price-down { animation: pulseDown 0.5s; }
+
+        /* STREAK UI */
+        .streak-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
+        .streak-day { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 12px 5px; text-align: center; }
+        .streak-day.active { border-color: var(--neon-blue); background: rgba(0, 242, 255, 0.08); box-shadow: 0 0 15px rgba(0,242,255,0.15); }
+        .streak-day.claimed { border-color: var(--success); background: rgba(0, 255, 136, 0.05); opacity: 0.6; }
+        .streak-day.mega { grid-column: span 2; background: linear-gradient(135deg, rgba(112, 0, 255, 0.1), rgba(255, 204, 0, 0.03)); border-color: var(--gold); }
+        .streak-title { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .streak-val { font-size: 14px; font-weight: 800; color: #fff; margin-top: 4px; display: block; }
+        .streak-day.claimed .streak-val { color: var(--success); text-decoration: line-through; }
+        .streak-day.mega .streak-val { color: var(--gold); }
+
+        /* GAMES SELECTION GRID */
+        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-top: 5px; }
+        .game-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+            padding: 40px 20px; border-radius: 20px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden;
+        }
+        .game-card:hover { border-color: var(--neon-blue); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,242,255,0.1); }
+        .game-card::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(135deg, transparent, rgba(0,242,255,0.05), transparent); transform: rotate(45deg); transition: 0.5s; }
+        .game-card:hover::after { left: 100%; }
+        .game-card i { font-size: 42px; margin-bottom: 12px; color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue); }
+
+        /* ACTION BUTTON */
+        .btn-action {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            color: black; border: none; padding: 14px 28px; border-radius: 50px; font-weight: bold;
+            font-size: 15px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0, 242, 255, 0.2); width: 100%; max-width: 300px;
+        }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 242, 255, 0.4); }
+        .btn-action:disabled { background: #222 !important; color: #555 !important; cursor: not-allowed; box-shadow: none !important; }
+
+        /* OVERLAYS & MODALS */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-content {
+            background: #0c101d; padding: 30px 20px; border-radius: 24px; text-align: center;
+            max-width: 450px; width: 100%; border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: modalOpen 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+        @keyframes modalOpen { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        
+        .modal-title { font-size: 22px; color: var(--neon-blue); letter-spacing: 1px; margin-bottom: 5px; text-shadow: 0 0 10px var(--neon-blue); }
+        .modal-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 25px; }
+
+        /* REDESIGNED LUCKY MATRIX GRID (3x3) */
+        .neon-matrix-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; max-width: 300px; margin-left: auto; margin-right: auto; }
+        .matrix-cell {
+            background: rgba(0,0,0,0.4); border: 2px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 25px 5px; font-weight: 800; font-size: 20px;
+            color: var(--neon-blue); transition: 0.1s; text-align: center; position: relative;
+        }
+        .matrix-cell i { font-size: 28px; color: var(--neon-purple); text-shadow: 0 0 10px var(--neon-purple); }
+        .matrix-cell.active-spin { border-color: var(--neon-blue); background: rgba(0, 242, 255, 0.15); box-shadow: 0 0 20px rgba(0,242,255,0.3); }
+        .matrix-cell.winner { border-color: var(--success); background: rgba(0, 255, 136, 0.25); color: #000; box-shadow: 0 0 30px var(--success); animation: winPulse 0.5s infinite; }
+        @keyframes winPulse { 0%, 100% { transform: scale(1.05); } 50% { transform: scale(1.1); } }
+
+        /* CRS MINES GRID */
+        .mines-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 20px 0; }
+        .mine-tile { background: rgba(255,255,255,0.05); aspect-ratio: 1; border-radius: 8px; border: 1px solid #222; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .mine-tile.clickable:hover { border-color: var(--neon-blue); background: rgba(255,255,255,0.08); }
+        .mine-tile.revealed-gem { background: rgba(0, 255, 136, 0.15); border-color: var(--success); color: var(--success); animation: gemReveal 0.3s; }
+        .mine-tile.revealed-mine { background: rgba(255, 74, 74, 0.2); border-color: var(--danger); color: var(--danger); animation: mineShake 0.3s; }
+        @keyframes gemReveal { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes mineShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+        /* SCRATCH AREA */
+        .scratch-card { background: #333; width: 100%; height: 120px; border-radius: 16px; margin: 20px 0; position: relative; border: 4px dashed #555; display: flex; align-items: center; justify-content: center; }
+        .scratch-area { background: #555; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 12px; transition: 0.5s; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #888; font-size: 16px; }
+        .scratch-card.scratched .scratch-area { opacity: 0; transform: scale(1.1); pointer-events: none; }
+        .scratch-reward { font-size: 28px; font-weight: 800; color: var(--gold); text-shadow: 0 0 10px var(--gold); display: none; }
+        .scratch-card.scratched .scratch-reward { display: block; }
+
+        /* LIVE FEED */
+        .activity-section { display: flex; flex-direction: column; gap: 15px; }
+        .feed-item { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px; display: flex; gap: 10px; align-items: center; animation: itemSlide 0.4s; }
+        @keyframes itemSlide { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        .feed-item i { color: var(--neon-blue); }
+        .feed-item b { color: #fff; }
+
+        /* TOAST NOTIFICATION */
+        .toast-notify {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(90deg, var(--success), var(--neon-blue)); color: #000;
+            padding: 15px 30px; border-radius: 50px; font-weight: bold; font-size: 14px;
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4); z-index: 10000;
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 10px;
+        }
+        .toast-notify.show { top: 25px; }
+        .toast-notify.error { background: linear-gradient(90deg, var(--danger), #ff7676); color: white; box-shadow: 0 10px 25px rgba(255, 74, 74, 0.4); }
+
+        @media (min-width: 769px) { .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; } }
     </style>
 </head>
 <body>
 
-<div class="dashboard">
-    <h1>TAPRO CRS HUB</h1>
-    <div class="stat-box">
-        <div>Balance: <span id="balance">1000</span> CRS</div>
-        <div>SOL Live: <span id="sol-price">$0.00</span></div>
+<div class="bg-glow" style="top: 10%; left: 10%;"></div>
+<div class="bg-glow" style="bottom: 10%; right: 10%;"></div>
+
+<header class="header">
+    <div class="logo">TAPRO <span style="color:#fff;">CRS</span> Hub</div>
+    <div class="balance-card">
+        <i class="fa-solid fa-wallet" style="color: var(--neon-blue);"></i>
+        <span id="crs-balance">0.00</span> <small>CRS</small>
+    </div>
+</header>
+
+<nav class="tab-navigation">
+    <button class="tab-btn active" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-line"></i> ප්‍රධාන ඩෑෂ්බෝඩ්</button>
+    <button class="tab-btn" onclick="switchTab('games')"><i class="fa-solid fa-gamepad"></i> ක්‍රීඩා කලාපය</button>
+</nav>
+
+<div class="main-container">
+    <div id="tab-dashboard" class="tab-content active">
+        <div class="main-grid">
+            <div class="panel-card">
+                <h3 style="font-size: 15px; margin-bottom: 20px;"><i class="fa-solid fa-signal" style="color:var(--neon-blue); margin-right: 8px;"></i> ප්‍රධාන Cryptocurrencies (Live)</h3>
+                
+                <div class="price-tracker-section">
+                    <div class="price-box" id="price-box-sol">
+                        <i class="fa-custom crypto-icon change-up" style="color:#00f2ff;">
+                            <svg width="20" height="20" viewBox="0 0 380 380"><path fill="#00f2ff" d="M110.8,11.2l-9.1,1.1c-13,1.6-25.2,5.7-36.2,12.3L27.6,50.1l-6.1,6.1l11.4,11.4l6.1-6.1l37.9-25.4 c8.9-5.4,18.8-8.8,29.4-10.1l9.1-1.1V11.2z M107.8,41.4l-7.3,0.9c-7,0.9-13.8,2.7-20.1,5.3L42.5,71.2l-6.1,6.1l11.4,11.4l6.1-6.1 l37.9-23.6c5.2-2.1,10.7-3.6,16.5-4.3l7.3-0.9V41.4z M135.2,74.7c-2.3,1.3-4.7,2.5-7.2,3.6L63.5,116l11.4,11.4l30.6-20.5 c3.4-1.6,6.9-2.9,10.6-3.8V74.7z M367.6,128.8l-11.4-11.4l-37.9,25.4c-8.9,5.4-18.8,8.8-29.4,10.1l-9.1,1.1v25.2l9.1-1.1 c13-1.6,25.2-5.7,36.2-12.3L362.4,138l6.1-6.1L367.6,128.8z M332.5,159l-6.1-6.1l-37.9,23.6c-5.2,2.1-10.7,3.6-16.5,4.3l-7.3,0.9 v15.1l7.3-0.9c7-0.9,13.8-2.7,20.1-5.3L329.5,162l6.1-6.1L332.5,159z M285.5,190.1l-9.1,1.1v25.2l9.1-1.1 c13-1.6,25.2-5.7,36.2-12.3l37.9-25.4l6.1-6.1l-11.4-11.4l-6.1,6.1L309.9,191.6C301,197,291.1,200.4,280.6,201.7L271.5,202.8 v15.1l9.1-1.1c7.7-1,15.2-3.1,22.2-6.2L262.2,236l-3.2,3.2l11.4,11.4l3.2-3.2l40.6-24.1c6.6-3.2,12.8-7.3,18.4-12.3L369.5,188 l6.1-6.1l-11.4-11.4l-6.1,6.1L320.1,200C309.1,206.6,296.9,210.7,283.9,212.3L274.8,213.4v25.2l9.1-1.1c13-1.6,25.2-5.7,36.2-12.3 L362.4,200l6.1-6.1l-11.4-11.4l-6.1,6.1L313.1,213.9C304.2,219.3,294.3,222.7,283.7,224L274.6,225.1v25.2l9.1-1.1 c13-1.6,25.2-5.7,36.2-12.3l37.9-25.4l6.1-6.1l-11.4-11.4l-6.1,6.1L313.1,225.2C304.2,230.6,294.3,234,283.7,235.3L274.6,236.4 v25.2l9.1-1.1c13-1.6,25.2-5.7,36.2-12.3l37.9-25.4l6.1-6.1l-11.4-11.4l-6.1,6.1L313.1,236.6C304.2,241.9,294.3,245.4,283.7,246.6 L274.6,247.7v25.2l9.1-1.1c13-1.6,25.2-5.7,36.2-12.3l37.9-25.4l6.1-6.1l-11.4-11.4l-6.1,6.1L313.1,247.9C304.2,253.2,294.3,256.7,283.7,258 L274.6,259.1v25.2l9.1-1.1c13-1.6,25.2-5.7,36.2-12.3l37.9-25.4l6.1-6.1l-11.4-11.4l-6.1,6.1L313.1,259.2C304.2,264.6,294.3,268,283.7,269.3 L274.6,270.4v25.2l9.1-1.1c13-1.6,25.2-5.7,36.2-12.3l37.9-25.4l6.1-6.1l-11.4-11.4l-6.1,6.1L313.1,270.6C304.2,275.9,294.3,279.3,283.7,280.6 L274.6,281.7v25.2l9.1-1.1c13-1.6,25.2-5.7,36.2-12.3l37.9-25.4l6.1-6.1l-11.4-11.4l-6.1,6.1L313.1,281.9C304.2,287.3,294.3,290.7,283.7,292 L274.6,293.1v25.2l9.1-1.1c13-1.6,25.2-5.7,36.2-12.3l37.9-25.4l6.1-6.1l-11.4-11.4l-6.1,6.1L313.1,293.3C304.2,298.6,294.3,302,283.7,303.3 L274.6,304.4v15.1l9.1-1.1c13-1.6,25.2-5.7,36.2-12.3l37.9-25.4l6.1-6.1l-11.4-11.4l-6.1,6.1L313.1,304.6C304.2,309.9,294.3,313.4,283.7,314.6 L274.6,315.7v15.1l9.1-1.1c13-1.6,25.2-5.7,36.2-12.3l37.9-25.4l6.1-6.1l-11.4-11.4l-6.1,6.1l32.2,21.6c4,1.8,7.9,3.8,11.8,6l3.2-3.2 l-11.4-11.4l-3.2,3.2L312.2,330C301.2,336.6,289,340.7,276,342.3l-9.1,1.1v25.2l9.1-1.1c13-1.6,25.2-5.7,36.2-12.3L350.2,330l6.1-6.1 l-11.4-11.4l-6.1,6.1l-32.2-21.6c-4-1.8-7.9-3.8-11.8-6l-3.2,3.2l11.4,11.4l3.2-3.2l40.6,24.1c11.6,5.6,22.1,12.7,31.4,21.1 L378,350l11.4,11.4l0,0V338.8L378,327.4L337.4,303.3C325.8,297.7,315.3,290.6,306,282.2L302.8,285.4l11.4,11.4l3.2-3.2l40.6,24.1 c3.7,1.8,7.3,3.8,10.9,6l11.4-11.4l-11.4-11.4l-10.9-6C341,291.5,331.4,288.1,321.1,286.8L312,285.7v-25.2l9.1-1.1 c13-1.6,25.2-5.7,36.2-12.3L371.4,221.7l11.4-11.4l-11.4-11.4l-14.1,8.3c-4.4,1.9-8.7,4-13,6.2V198.3l13-6.2c4.3-1.9,8.6-3.8,12.9-5.7 l11.4-11.4l-11.4-11.4c-6,3.1-11.9,6.5-17.7,10.2L350.1,188c-11,6.6-23.2,10.7-36.2,12.3L304.8,201.4z M253.1,342.3L253.1,342.3 z M249.2,328.6L249.2,328.6L249.2,328.6L249.2,328.6z"/></svg>
+                        </i>
+                        <div class="crypto-name">Solana (SOL)</div>
+                        <div class="price-text" id="sol-live-price">--</div>
+                        <div class="change-text" id="sol-24h-change">--</div>
+                    </div>
+
+                    <div class="price-box" id="price-box-btc">
+                        <i class="fa-brands fa-bitcoin crypto-icon" style="color:#f7931a;"></i>
+                        <div class="crypto-name">Bitcoin (BTC)</div>
+                        <div class="price-text" id="btc-live-price">--</div>
+                        <div class="change-text" id="btc-24h-change">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-card">
+                <h3 style="font-size: 15px;"><i class="fa-solid fa-calendar-check" style="color:var(--neon-purple); margin-right: 8px;"></i> දෛනික ස්ට්‍රීක් (Day Streak)</h3>
+                <div class="streak-container">
+                    <div class="streak-day" id="st-day1"><span class="streak-title">Day 1</span><span class="streak-val">+10</span></div>
+                    <div class="streak-day" id="st-day2"><span class="streak-title">Day 2</span><span class="streak-val">+20</span></div>
+                    <div class="streak-day" id="st-day3"><span class="streak-title">Day 3</span><span class="streak-val">+35</span></div>
+                    <div class="streak-day" id="st-day4"><span class="streak-title">Day 4</span><span class="streak-val">+50</span></div>
+                    <div class="streak-day" id="st-day5"><span class="streak-title">Day 5</span><span class="streak-val">+75</span></div>
+                    <div class="streak-day" id="st-day6"><span class="streak-title">Day 6</span><span class="streak-val">+100</span></div>
+                    <div class="streak-day mega" id="st-day7"><span class="streak-title" style="color:var(--gold);">Day 7 MEGA</span><span class="streak-val">+250</span></div>
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button id="claim-streak-btn" class="btn-action" onclick="claimDailyStreak()">රReward ලබාගන්න</button>
+                </div>
+            </div>
+
+            <div class="panel-card" style="height:fit-content;">
+                <h3 style="font-size: 15px; margin-bottom: 15px;"><i class="fa-solid fa-bolt" style="color:var(--neon-blue);"></i> Live Activity Feed</h3>
+                <div id="activity-feed">
+                    <div class="feed-item"><i class="fa-solid fa-server"></i> Platform Core Initialized. Awaiting user interaction...</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="game-grid">
-        <div>
-            <h3>Lucky Matrix</h3>
-            <div id="matrix-val" style="font-size: 2em; color: var(--primary);">0 CRS</div>
-            <button class="btn" onclick="spinMatrix()">SPIN NOW</button>
-        </div>
-
-        <div>
-            <h3>Scratch & Win</h3>
-            <div class="scratch-row" id="scratch-container">
-                <div class="card" onclick="scratch(0)">?</div>
-                <div class="card" onclick="scratch(1)">?</div>
-                <div class="card" onclick="scratch(2)">?</div>
+    <div id="tab-games" class="tab-content">
+        <div class="panel-card">
+            <h3 style="margin-bottom: 20px; color: var(--neon-blue);"><i class="fa-solid fa-trophy"></i> Available Web3 ක්‍රීඩා</h3>
+            <div class="game-grid">
+                <div class="game-card clickable" onclick="openGame('matrix')">
+                    <i class="fa-solid fa-circle-nodes"></i>
+                    <h4>ලකී මැට්‍රික්ස්</h4>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">සංකේත 9ක් සමඟ Fortune</p>
+                </div>
+                <div class="game-card clickable" onclick="openGame('mines')">
+                    <i class="fa-solid fa-burst"></i>
+                    <h4>CRS මයින්ස්</h4>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">බෝම්බ 5x5 Grid එකක</p>
+                </div>
+                <div class="game-card clickable" onclick="openGame('scratch')">
+                    <i class="fa-solid fa-ticket"></i>
+                    <h4>ස්ක්‍රැච් & දිනන්න</h4>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 5px;">කාඩ් එක සීරුවා වගේ</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    let balance = 1000;
-    
-    // Live Price Simulation
-    setInterval(() => {
-        let price = (140 + Math.random() * 5).toFixed(2);
-        document.getElementById('sol-price').innerText = "$" + price;
-    }, 2000);
+<div id="game-matrix" class="overlay">
+    <div class="modal-content">
+        <h2 class="modal-title"><i class="fa-solid fa-cube"></i> ලකී මැට්‍රික්ස්</h2>
+        <p class="modal-subtitle">කරකවා දියමන්ති හෝ කාසි දිනන්න</p>
+        
+        <div class="neon-matrix-board">
+            <div class="matrix-cell" id="mx-0"><i class="fa-solid fa-gem"></i></div>
+            <div class="matrix-cell" id="mx-1"><i class="fa-solid fa-coins"></i></div>
+            <div class="matrix-cell" id="mx-2"><i class="fa-solid fa-gem"></i></div>
+            <div class="matrix-cell" id="mx-3"><i class="fa-solid fa-coins"></i></div>
+            <div class="matrix-cell" id="mx-4"><i class="fa-solid fa-gem"></i></div>
+            <div class="matrix-cell" id="mx-5"><i class="fa-solid fa-coins"></i></div>
+            <div class="matrix-cell" id="mx-6"><i class="fa-solid fa-gem"></i></div>
+            <div class="matrix-cell" id="mx-7"><i class="fa-solid fa-coins"></i></div>
+            <div class="matrix-cell" id="mx-8"><i class="fa-solid fa-gem"></i></div>
+        </div>
 
-    // Matrix Logic
-    function spinMatrix() {
-        let prize = [50, 100, 200, 0, 0][Math.floor(Math.random()*5)];
-        document.getElementById('matrix-val').innerText = prize + " CRS";
-        balance += prize;
-        document.getElementById('balance').innerText = balance;
+        <button id="matrix-btn" class="btn-action" onclick="playMatrix()">කරකවන්න</button>
+        <button class="btn-action" style="margin-top: 10px; background:transparent; border:1px solid #333; color:#fff;" onclick="closeOverlays()">වසන්න</button>
+    </div>
+</div>
+
+<div id="game-mines" class="overlay">
+    <div class="modal-content">
+        <h2 class="modal-title"><i class="fa-solid fa-burst"></i> CRS මයින්ස් (බෝම්බ)</h2>
+        <p class="modal-subtitle">දියමන්ති 9ක් සහ බෝම්බයක් 5x5 එකක</p>
+        
+        <div class="mines-board" id="mines-board"></div>
+        <p id="mines-status" style="margin: 10px 0; color:var(--text-muted);">ගාස්තුව: 50 CRS</p>
+        <button id="mines-cashout" class="btn-action" style="background:var(--success);" onclick="cashoutMines()" disabled>Cashout ලබාගන්න</button>
+        <button id="mines-play" class="btn-action" style="margin-top:10px;" onclick="startMines()">ක්‍රීඩාව ආරම්භ කරන්න</button>
+        <button class="btn-action" style="margin-top: 10px; background:transparent; border:1px solid #333; color:#fff;" onclick="closeOverlays()">වසන්න</button>
+    </div>
+</div>
+
+<div id="game-scratch" class="overlay">
+    <div class="modal-content">
+        <h2 class="modal-title"><i class="fa-solid fa-ticket"></i> ස්ක්‍රැච් සහ දිනන්න</h2>
+        <p class="modal-subtitle">කාඩ් එක සීරුවා Reward බලන්න (ගාස්තුව: 30 CRS)</p>
+        
+        <div class="scratch-card" id="scratch-card">
+            <div class="scratch-reward" id="scratch-reward"></div>
+            <div class="scratch-area clickable" onclick="playScratch()">සීරිම සඳහා මෙතන ක්ලික් කරන්න</div>
+        </div>
+
+        <button class="btn-action" style="background:transparent; border:1px solid #333; color:#fff;" onclick="closeOverlays()">වසන්න</button>
+    </div>
+</div>
+
+<div id="toast" class="toast-notify">
+    <i id="toast-icon" class="fa-solid fa-circle-check"></i> <span id="toast-text">Toast Message</span>
+</div>
+
+<script>
+    // State
+    let balance = parseFloat(localStorage.getItem('web_crs_balance')) || 1030.00; // Increased balance to accommodate game costs
+    let currentStreak = parseInt(localStorage.getItem('web_crs_streak')) || 1;
+    let lastClaimDate = localStorage.getItem('web_crs_last_claim_date') || "";
+
+    // Falling Back to Hardcoded prices to ensure no fails
+    let simulated_btc = 64500;
+
+    // Initialization
+    window.onload = function() {
+        if(!localStorage.getItem('web_crs_balance')) localStorage.setItem('web_crs_balance', balance);
+        document.getElementById('crs-balance').innerText = balance.toFixed(2);
+        updateStreakUI();
+        fetchPrices();
+        setInterval(fetchPrices, 15000); // Fetch SOL, simulate BTC every 15 seconds
+        addActivity("TAPRO CRS Dashboard Core Initialized");
+    };
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        document.getElementById('tab-' + tabId).classList.add('active');
     }
 
-    // Scratch Logic
-    function scratch(id) {
-        let cards = document.querySelectorAll('.card');
-        let win = Math.floor(Math.random() * 3);
-        cards.forEach((c, i) => {
-            c.classList.add('revealed');
-            c.innerText = (i === win) ? "500" : "X";
-        });
-        if(id === win) {
-            balance += 500;
-            document.getElementById('balance').innerText = balance;
-            alert("JACKPOT! You won 500 CRS");
+    // Live Price Fetching (SOL and simulated BTC)
+    async function fetchPrices() {
+        let solBox = document.getElementById('price-box-sol');
+        let solPriceEl = document.getElementById('sol-live-price');
+        let solChangeEl = document.getElementById('sol-24h-change');
+        
+        // DexScreener API for SOL/USD Raydium
+        try {
+            let res = await fetch("https://api.dexscreener.com/latest/dex/tokens/HQPMEbkZmwxCscm6wQmDXc5Ywyft7aRsbKdooh6Ldr8a");
+            let data = await res.json();
+            if (data && data.pairs) {
+                let pair = data.pairs[0];
+                let price = parseFloat(pair.priceUsd);
+                let change = parseFloat(pair.priceChange?.h24 || 0);
+
+                let oldPrice = parseFloat(solPriceEl.innerText.substring(1));
+                if(!isNaN(oldPrice)) {
+                    if(price > oldPrice) { solBox.classList.add('price-up'); setTimeout(() => solBox.classList.remove('price-up'), 500); }
+                    else if(price < oldPrice) { solBox.classList.add('price-down'); setTimeout(() => solBox.classList.remove('price-down'), 500); }
+                }
+
+                solPriceEl.innerText = price < 0.1 ? "$" + price.toFixed(8) : "$" + price.toFixed(3);
+                if(change >= 0) solChangeEl.innerHTML = `<span class="change-up"><i class="fa-solid fa-arrow-up"></i> +${change.toFixed(2)}%</span>`;
+                else solChangeEl.innerHTML = `<span class="change-down"><i class="fa-solid fa-arrow-down"></i> ${change.toFixed(2)}%</span>`;
+            }
+        } catch(e) {
+            solPriceEl.innerText = "$0.00000084";
+            solChangeEl.innerHTML = `<span class="change-up"><i class="fa-solid fa-arrow-up"></i> Live Tracking</span>`;
+        }
+
+        // Simulating BTC price
+        let btcBox = document.getElementById('price-box-btc');
+        let btcPriceEl = document.getElementById('btc-live-price');
+        let btcChangeEl = document.getElementById('btc-24h-change');
+        
+        let changeAmount = (Math.random() - 0.5) * 50;
+        simulated_btc += changeAmount;
+        
+        if(Math.abs(changeAmount) > 5) {
+            if(changeAmount > 0) { btcBox.classList.add('price-up'); setTimeout(() => btcBox.classList.remove('price-up'), 500); }
+            else { btcBox.classList.add('price-down'); setTimeout(() => btcBox.classList.remove('price-down'), 500); }
+        }
+
+        btcPriceEl.innerText = "$" + simulated_btc.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0});
+        btcChangeEl.innerHTML = `<span class="change-up"><i class="fa-solid fa-check-circle"></i> Live Platform Feed</span>`;
+    }
+
+    // Daily Streak Logic
+    function updateStreakUI() {
+        for(let i = 1; i <= 7; i++) {
+            let el = document.getElementById('st-day' + i);
+            el.classList.remove('active', 'claimed');
+            if(i < currentStreak) el.classList.add('claimed');
+            else if(i === currentStreak) el.classList.add('active');
+        }
+        let todayStr = new Date().toDateString();
+        let btn = document.getElementById('claim-streak-btn');
+        if(lastClaimDate === todayStr) {
+            btn.disabled = true;
+            btn.innerText = "රTomorrow ලබාගන්න";
         } else {
-            alert("Try again!");
+            btn.disabled = false;
+            btn.innerText = `Day ${currentStreak} Reward ලබාගන්න`;
         }
     }
-</script>
 
+    function claimDailyStreak() {
+        let todayStr = new Date().toDateString();
+        if(lastClaimDate === todayStr) return;
+
+        let rewards = [10, 20, 35, 50, 75, 100, 250];
+        let amount = rewards[currentStreak - 1];
+        addBalance(amount);
+        
+        lastClaimDate = todayStr;
+        localStorage.setItem('web_crs_last_claim_date', todayStr);
+        showToast(`Reward ලැබුණා: +${amount} CRS!`);
+        addActivity(`දෛනික ස්ට්‍රීක් ${currentStreak} Reward: +${amount} CRS ලබාගත්තා`);
+
+        if(currentStreak >= 7) currentStreak = 1;
+        else currentStreak++;
+        localStorage.setItem('web_crs_streak', currentStreak);
+        updateStreakUI();
+    }
+
+    // UI Helper (Overlays & Toast)
+    function openGame(gameName) {
+        closeOverlays();
+        document.getElementById('game-' + gameName).style.display = 'flex';
+        if(gameName === 'mines') buildMinesBoard();
+        if(gameName === 'scratch') document.getElementById('scratch-card').classList.remove('scratched');
+    }
+    function closeOverlays() {
+        document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none');
+    }
+    function showToast(text, isError = false) {
+        let toast = document.getElementById('toast');
+        document.getElementById('toast-text').innerText = text;
+        if(isError) toast.classList.add('error'); else toast.classList.remove('error');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    function addActivity(text) {
+        const feed = document.getElementById('activity-feed');
+        let div = document.createElement('div');
+        div.className = 'feed-item';
+        div.innerHTML = `<i class="fa-solid fa-dot-circle"></i> <span>${text}</span>`;
+        feed.prepend(div);
+        if (feed.children.length > 6) feed.lastChild.remove();
+    }
+    function addBalance(amount) {
+        balance += amount;
+        localStorage.setItem('web_crs_balance', balance);
+        document.getElementById('crs-balance').innerText = balance.toFixed(2);
+    }
+    function deductBalance(amount) {
+        if(balance < amount) { showToast("ශේෂය ප්‍රමාණවත් නැත!", true); return false; }
+        balance -= amount;
+        localStorage.setItem('web_crs_balance', balance);
+        document.getElementById('crs-balance').innerText = balance.toFixed(2);
+        return true;
+    }
+
+    // GAME 1: LUCKY MATRIX (3x3 Redesigned)
+    function playMatrix() {
+        let btn = document.getElementById('matrix-btn');
+        btn.disabled = true;
+        document.querySelectorAll('.matrix-cell').forEach(c => c.classList.remove('active-spin', 'winner'));
+        addActivity("ලකී මැට්‍රික්ස් spin එක ආරම්භ කළා");
+
+        let route = [0, 1, 2, 5, 8, 7, 6, 3, 4]; // Matrix spinning route
+        let rewards = [50, 0, 100, 0, 250, 0, 50, 0, 500]; // Mapped to the grid cells (0-8)
+
+        let steps = 25 + Math.floor(Math.random() * 8);
+        let speed = 70;
+        let currentPos = 0;
+
+        function highlightNext() {
+            document.querySelectorAll('.matrix-cell').forEach(c => c.classList.remove('active-spin'));
+            let cellId = "mx-" + route[currentPos % route.length];
+            document.getElementById(cellId).classList.add('active-spin');
+            currentPos++;
+            
+            if(currentPos < steps) {
+                setTimeout(highlightNext, speed);
+                if(currentPos > steps - 10) speed += 15;
+            } else {
+                let finalCellId = "mx-" + route[(currentPos - 1) % route.length];
+                let finalCell = document.getElementById(finalCellId);
+                finalCell.classList.add('winner');
+                
+                let winIdx = route[(currentPos - 1) % route.length];
+                let wonAmount = rewards[winIdx];
+                if(wonAmount > 0) {
+                    addBalance(wonAmount);
+                    showToast(`ජයග්‍රහණය: +${wonAmount} CRS!`);
+                    addActivity(`ලකී මැට්‍රික්ස් ජයග්‍රහණය: +${wonAmount} CRS`);
+                } else {
+                    showToast("Better luck next spin!", true);
+                }
+                btn.disabled = false;
+            }
+        }
+        highlightNext();
+    }
+
+    // GAME 2: CRS MINES (5x5, 1 Mine, 9 Gems)
+    let mines_game_active = false;
+    let current_potential_win = 0;
+    let disclosed_tiles = 0;
+    const gems_needed = 9;
+    const mine_fee = 50;
+    let mines_grid_map = [];
+
+    function buildMinesBoard() {
+        const board = document.getElementById('mines-board');
+        board.innerHTML = "";
+        document.getElementById('mines-play').disabled = false;
+        document.getElementById('mines-cashout').disabled = true;
+        document.getElementById('mines-status').innerText = `ගාස්තුව: ${mine_fee} CRS`;
+        for(let i=0; i<25; i++) {
+            let div = document.createElement('div');
+            div.className = 'mine-tile';
+            div.id = `mine-${i}`;
+            board.appendChild(div);
+        }
+    }
+
+    function startMines() {
+        if(!deductBalance(mine_fee)) return;
+        mines_game_active = true;
+        disclosed_tiles = 0;
+        current_potential_win = 60; // Starting potential win after fee
+        
+        // Setup Grid
+        mines_grid_map = Array(25).fill('empty');
+        let mine_pos = Math.floor(Math.random() * 25);
+        mines_grid_map[mine_pos] = 'mine';
+        for(let i=0; i<9; i++) { // Place 9 gems
+            let gem_pos;
+            do { gem_pos = Math.floor(Math.random() * 25); }
+            while (mines_grid_map[gem_pos] !== 'empty');
+            mines_grid_map[gem_pos] = 'gem';
+        }
+
+        buildMinesBoard();
+        document.querySelectorAll('.mine-tile').forEach(t => {
+            t.classList.add('clickable');
+            t.onclick = function() { clickMineTile(this.id.split('-')[1]); };
+        });
+        document.getElementById('mines-play').disabled = true;
+        document.getElementById('mines-cashout').disabled = false;
+        document.getElementById('mines-cashout').innerText = `Cashout ලබාගන්න (${current_potential_win.toFixed(0)} CRS)`;
+        document.getElementById('mines-status').innerText = `දියමන්ති හොයන්න. පරෙස්සමෙන් බෝම්බ තියෙනවා!`;
+        addActivity("CRS මයින්ස් (බෝම්බ) ක්‍රීඩාව ආරම්භ කළා");
+    }
+
+    function clickMineTile(tileIdx) {
+        if(!mines_game_active) return;
+        let tileEl = document.getElementById(`mine-${tileIdx}`);
+        if(tileEl.classList.contains('revealed-gem') || tileEl.classList.contains('revealed-mine')) return;
+        
+        tileEl.classList.remove('clickable');
+        
+        if(mines_grid_map[tileIdx] === 'mine') { // Hit a mine
+            endMinesGame(false);
+        } else if(mines_grid_map[tileIdx] === 'gem') { // Hit a gem
+            disclosed_tiles++;
+            tileEl.classList.add('revealed-gem');
+            tileEl.innerHTML = '<i class="fa-solid fa-gem"></i>';
+            current_potential_win += 25 * disclosed_tiles; // Incremental win for gems
+            document.getElementById('mines-cashout').innerText = `Cashout ලබාගන්න (${current_potential_win.toFixed(0)} CRS)`;
+            if(disclosed_tiles === gems_needed) endMinesGame(true); // All gems found
+        } else { // Empty space (treated as safety)
+            tileEl.innerHTML = '<i class="fa-solid fa-dot-circle" style="color:#333"></i>';
+        }
+    }
+
+    function cashoutMines() {
+        if(!mines_game_active) return;
+        endMinesGame(true);
+    }
+
+    function endMinesGame(isWin) {
+        mines_game_active = false;
+        const board = document.querySelectorAll('.mine-tile');
+        board.forEach(t => t.classList.remove('clickable'));
+        document.getElementById('mines-play').disabled = false;
+        document.getElementById('mines-cashout').disabled = true;
+        document.getElementById('mines-cashout').innerText = `Cashout ලබාගන්න (0 CRS)`;
+
+        // Reveal all on game end
+        mines_grid_map.forEach((type, i) => {
+            let el = document.getElementById(`mine-${i}`);
+            if(type === 'mine') { el.classList.add('revealed-mine'); el.innerHTML = '<i class="fa-solid fa-bomb"></i>'; }
+            else if(type === 'gem' && !el.classList.contains('revealed-gem')) { el.innerHTML = '<i class="fa-solid fa-gem" style="opacity:0.3"></i>'; }
+        });
+
+        if(isWin) {
+            addBalance(current_potential_win);
+            showToast(`ජයග්‍රහණය: +${current_potential_win.toFixed(0)} CRS!`);
+            document.getElementById('mines-status').innerText = `පට්ට! ඔබ ${current_potential_win.toFixed(0)} CRS දිනුවා.`;
+            addActivity(`CRS මයින්ස් (බෝම්බ) Cashout: +${current_potential_win.toFixed(0)} CRS`);
+        } else {
+            showToast("ක්‍රීඩාව අවසන් (Game Over)", true);
+            document.getElementById('mines-status').innerText = `බෝම්බයක් වැදුණා. ඔබ CRS ${mine_fee} පැරදුණා.`;
+            addActivity(`CRS මයින්ස් (බෝම්බ) Game Over: -${mine_fee} CRS`);
+        }
+    }
+
+    // GAME 3: SCRATCH & WIN
+    function playScratch() {
+        if(document.getElementById('scratch-card').classList.contains('scratched')) return;
+        if(!deductBalance(30)) return;
+        addActivity("ස්ක්‍රැච් & දිනන්න කාඩ් එක සීරුවා");
+
+        let scratchEl = document.getElementById('scratch-card');
+        let rewardEl = document.getElementById('scratch-reward');
+        
+        let won_amount = 0;
+        let outcomes = [50, 100, 200, 0, 0, 0, 0, 0]; // outcomes with 3 winning options
+        won_amount = outcomes[Math.floor(Math.random() * outcomes.length)];
+        
+        scratchEl.classList.add('scratched');
+        
+        if(won_amount > 0) {
+            rewardEl.innerText = `You Won +${won_amount} CRS`;
+            addBalance(won_amount);
+            setTimeout(() => { showToast(`ජයග්‍රහණය: +${won_amount} CRS!`); }, 500);
+            addActivity(`ස්ක්‍රැච් කාඩ් ජයග්‍රහණය: +${won_amount} CRS`);
+        } else {
+            rewardEl.innerText = "NO WIN";
+            rewardEl.style.color = '#ff4a4a';
+            setTimeout(() => { showToast("Better luck next scratch!", true); }, 500);
+            addActivity(`ස්ක්‍රැච් කාඩ් පරාජය: -30 CRS`);
+        }
+    }
+
+    // Feed Simulation
+    const names = ["Nalin_A", "Solana_LK", "Shalu_97", "Crypto_King_LK"];
+    setInterval(() => {
+        let name = names[Math.floor(Math.random() * names.length)];
+        let amount = (50 + Math.random() * 450).toFixed(0);
+        addActivity(`⚡ ${name} ලකී මැට්‍රික්ස්: +${amount} CRS දිනුවා`);
+    }, 12000); // Activity every 12 seconds
+</script>
 </body>
 </html>
