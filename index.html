@@ -68,7 +68,7 @@
         .game-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
             padding: 25px 15px; border-radius: 18px; text-align: center; cursor: pointer;
-            transition: 0.3s; border: 1px solid rgba(255,255,255,0.06); text-decoration: none; color: white; display: block;
+            transition: 0.3s; border: 1px solid rgba(255,255,255,0.06);
         }
         .game-card:hover { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 242, 255, 0.15); }
         .game-card i { font-size: 32px; margin-bottom: 12px; color: var(--neon-blue); }
@@ -111,7 +111,7 @@
     </div>
 </div>
 
-<div id="dashboard-screen" onclick="window.open('https://www.effectivecpmnetwork.com/ci8tnjgpix?key=4b92b8ccd2f66278e89d64a99e5eacf0', '_blank')">
+<div id="dashboard-screen">
     <header class="header">
         <div class="logo">CEYLON <span style="color: #fff;">RS</span></div>
         <div class="balance-card">
@@ -129,7 +129,7 @@
                         <h2 id="live-price" style="font-size: 22px; margin-top: 2px;">⚡ Fetching Realtime...</h2>
                     </div>
                     <div>
-                        <button class="btn-action" style="padding: 6px 14px; font-size: 11px;" onclick="event.stopPropagation(); dailyReward()">BONUS</button>
+                        <button class="btn-action" style="padding: 6px 14px; font-size: 11px;" onclick="dailyReward()">BONUS</button>
                     </div>
                 </div>
                 <div style="width:100%; height:120px; position:relative;">
@@ -141,23 +141,23 @@
                 <h3 style="font-size: 15px;"><i class="fa-solid fa-share-nodes" style="color: var(--neon-blue); margin-right: 6px;"></i> REFERRAL ENGINE</h3>
                 <div class="ref-box">
                     <div class="ref-url" id="ref-link-display">Generating link...</div>
-                    <button class="btn-action" style="padding: 8px 16px; border-radius: 10px; font-size: 12px;" onclick="event.stopPropagation(); copyReferral()">COPY</button>
+                    <button class="btn-action" style="padding: 8px 16px; border-radius: 10px; font-size: 12px;" onclick="copyReferral()">COPY</button>
                 </div>
             </div>
 
             <div class="game-grid">
-                <a href="https://www.effectivecpmnetwork.com/ci8tnjgpix?key=4b92b8ccd2f66278e89d64a99e5eacf0" target="_blank" class="game-card">
+                <div class="game-card" onclick="openGameWithAd()">
                     <i class="fa-solid fa-circle-dot"></i>
                     <h4>LUCKY SPIN</h4>
-                </a>
-                <a href="https://www.effectivecpmnetwork.com/ci8tnjgpix?key=4b92b8ccd2f66278e89d64a99e5eacf0" target="_blank" class="game-card">
+                </div>
+                <div class="game-card" onclick="openGameWithAd()">
                     <i class="fa-solid fa-burst"></i>
                     <h4>CRS MINES</h4>
-                </a>
-                <a href="https://www.effectivecpmnetwork.com/ci8tnjgpix?key=4b92b8ccd2f66278e89d64a99e5eacf0" target="_blank" class="game-card">
+                </div>
+                <div class="game-card" onclick="openGameWithAd()">
                     <i class="fa-solid fa-ticket"></i>
                     <h4>SCRATCH</h4>
-                </a>
+                </div>
             </div>
         </div>
 
@@ -181,6 +181,16 @@
 </div>
 
 <script>
+    // අලුත් Function එක මෙතන තියෙනවා
+    function openGameWithAd() {
+        if (!localStorage.getItem('ad_shown')) {
+            window.open('https://www.effectivecpmnetwork.com/ci8tnjgpix?key=4b92b8ccd2f66278e89d64a99e5eacf0', '_blank');
+            localStorage.setItem('ad_shown', 'true');
+        }
+        // ගේම් එක ඕපන් වෙන්න කලින් තිබ්බ ක්‍රියාව (Original function call)
+        openGame();
+    }
+
     const REFERRAL_REWARD_POINTS = 50.00;
     let balance = parseFloat(localStorage.getItem('web_crs_balance')) || 0.00;
     let currentUser = localStorage.getItem('web_crs_user') || "";
