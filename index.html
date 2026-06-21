@@ -1,48 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceylon RS | Mines Game</title>
-    <script type="text/javascript" src="//www.higheffectrevenuegate.com/eb/7e/c3/eb7ec3152d1142278061482813132326.js"></script>
-    <style>
-        :root { --bg: #050810; --neon-blue: #00f2ff; --card: rgba(16, 22, 35, 0.85); }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
-        .game-container { max-width: 400px; margin: auto; background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #333; }
-        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
-        .cell { aspect-ratio: 1; background: #1a2234; border-radius: 8px; cursor: pointer; border: 1px solid #444; }
-        .btn { background: var(--neon-blue); color: #000; padding: 12px 25px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ceylon RS v1.0</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root{
+--bg:#050810;
+--card:#101623;
+--blue:#00f2ff;
+--purple:#7000ff;
+--text:#fff;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
+
+body{background:var(--bg);color:var(--text);}
+
+/* LOGIN */
+#login{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.login-box{
+background:var(--card);
+padding:30px;
+border-radius:20px;
+width:90%;
+max-width:350px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:10px;
+border:none;
+outline:none;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,var(--blue),var(--purple));
+font-weight:bold;
+}
+
+/* DASHBOARD */
+#dashboard{display:none;padding:15px;}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:10px;
+}
+
+.card{
+background:var(--card);
+padding:15px;
+border-radius:15px;
+margin-top:15px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-top:10px;
+}
+
+.box{
+background:#0d1422;
+padding:15px;
+border-radius:15px;
+text-align:center;
+cursor:pointer;
+}
+
+</style>
 </head>
+
 <body>
 
-<div class="game-container">
-    <h2>CRS MINES</h2>
-    <div id="wallet">Balance: <span id="balance">100.00</span> CRS</div>
-    
-    <div id="banner-ad" style="margin: 15px 0;">
-        <script type="text/javascript" src="//www.higheffectrevenuegate.com/5c/7f/45/5c7f4529329723329.js"></script>
-    </div>
+<!-- LOGIN -->
+<div id="login">
+<div class="login-box">
+<h2>Ceylon RS</h2>
+<input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">ENTER</button>
+</div>
+</div>
 
-    <div class="grid" id="grid"></div>
-    <button class="btn" onclick="startGame()">START GAME</button>
-    <br><br>
-    <a href="https://www.higheffectrevenuegate.com/d6/3d/8c/d63d8c4e4329723325.js" class="btn" style="background:#7000ff; color:white; text-decoration:none;">DAILY LUCKY SPIN (FREE CRS)</a>
+<!-- DASHBOARD -->
+<div id="dashboard">
+
+<div class="header">
+<h3>CEYLON RS</h3>
+<div>💰 <span id="bal">10</span></div>
+</div>
+
+<div class="card">
+<h4>Wallet</h4>
+<p>Daily rewards + referral system active</p>
+</div>
+
+<div class="card">
+<h4>Games</h4>
+<div class="grid">
+<div class="box" onclick="spin()">🎰 Spin</div>
+<div class="box">🎯 Mines</div>
+<div class="box">🎟 Scratch</div>
+<div class="box" onclick="reward()">🎁 Bonus</div>
+</div>
+</div>
+
+<div class="card">
+<h4>Referral</h4>
+<p id="ref">loading...</p>
+</div>
+
+<!-- AD SLOT (Banner 300x250) -->
+<div class="card" style="text-align:center">
+<p>Ad Space</p>
+</div>
+
 </div>
 
 <script>
-    let balance = 100.00;
-    function startGame() {
-        const grid = document.getElementById('grid');
-        grid.innerHTML = '';
-        for(let i=0; i<25; i++) {
-            let div = document.createElement('div');
-            div.className = 'cell';
-            div.onclick = function() { this.style.background = '#00f2ff'; balance += 5; updateUI(); };
-            grid.appendChild(div);
-        }
-    }
-    function updateUI() { document.getElementById('balance').innerText = balance.toFixed(2); }
+
+let balance=0;
+
+function login(){
+document.getElementById("login").style.display="none";
+document.getElementById("dashboard").style.display="block";
+balance=10;
+document.getElementById("bal").innerText=balance;
+
+document.getElementById("ref").innerText=
+window.location.href+"?ref=ceylonrs";
+}
+
+/* DAILY BONUS */
+function reward(){
+balance+=5;
+document.getElementById("bal").innerText=balance;
+}
+
+/* SPIN */
+function spin(){
+let win=Math.floor(Math.random()*20);
+balance+=win;
+document.getElementById("bal").innerText=balance;
+alert("You won "+win);
+}
+
 </script>
 
 </body>
