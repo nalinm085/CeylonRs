@@ -3,166 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ceylon RS v1.0</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<title>Ceylon RS v1.1</title>
 
 <style>
-:root{
---bg:#050810;
---card:#101623;
---blue:#00f2ff;
---purple:#7000ff;
---text:#fff;
+body{
+margin:0;
+font-family:Arial;
+background:#050810;
+color:white;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
-
-body{background:var(--bg);color:var(--text);}
-
-/* LOGIN */
-#login{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.login-box{
-background:var(--card);
-padding:30px;
-border-radius:20px;
-width:90%;
-max-width:350px;
-}
-
-input{
-width:100%;
-padding:12px;
-margin:10px 0;
-border-radius:10px;
-border:none;
-outline:none;
-}
-
-button{
-width:100%;
-padding:12px;
-border:none;
-border-radius:10px;
-background:linear-gradient(90deg,var(--blue),var(--purple));
-font-weight:bold;
-}
-
-/* DASHBOARD */
-#dashboard{display:none;padding:15px;}
-
-.header{
+header{
 display:flex;
 justify-content:space-between;
-align-items:center;
-padding:10px;
+padding:15px;
+background:#101623;
+position:sticky;
+top:0;
 }
 
 .card{
-background:var(--card);
+background:#101623;
+margin:15px;
 padding:15px;
 border-radius:15px;
-margin-top:15px;
+}
+
+button{
+padding:10px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#00f2ff,#7000ff);
+color:black;
+font-weight:bold;
+}
+
+/* SPIN WHEEL */
+#wheel{
+width:200px;
+height:200px;
+border-radius:50%;
+border:5px solid white;
+margin:auto;
+transition:4s;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.center{
+text-align:center;
 }
 
 .grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
 gap:10px;
-margin-top:10px;
 }
 
 .box{
 background:#0d1422;
 padding:15px;
-border-radius:15px;
+border-radius:10px;
 text-align:center;
 cursor:pointer;
 }
-
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="login">
-<div class="login-box">
-<h2>Ceylon RS</h2>
-<input id="email" placeholder="Email">
-<input id="pass" type="password" placeholder="Password">
-<button onclick="login()">ENTER</button>
-</div>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard">
-
-<div class="header">
+<header>
 <h3>CEYLON RS</h3>
 <div>💰 <span id="bal">10</span></div>
-</div>
+</header>
 
-<div class="card">
-<h4>Wallet</h4>
-<p>Daily rewards + referral system active</p>
+<div class="card center">
+<h4>Lucky Spin</h4>
+<div id="wheel">SPIN</div>
+<br>
+<button onclick="spin()">SPIN NOW</button>
 </div>
 
 <div class="card">
 <h4>Games</h4>
 <div class="grid">
-<div class="box" onclick="spin()">🎰 Spin</div>
 <div class="box">🎯 Mines</div>
 <div class="box">🎟 Scratch</div>
 <div class="box" onclick="reward()">🎁 Bonus</div>
+<div class="box">👥 Referral</div>
 </div>
 </div>
 
 <div class="card">
-<h4>Referral</h4>
-<p id="ref">loading...</p>
+<h4>Referral Link</h4>
+<p id="ref"></p>
 </div>
 
-<!-- AD SLOT (Banner 300x250) -->
-<div class="card" style="text-align:center">
-<p>Ad Space</p>
-</div>
-
+<!-- AD SPACE -->
+<div class="card center">
+<p>Ad Banner 300x250</p>
 </div>
 
 <script>
 
-let balance=0;
+let bal=10;
+let rotation=0;
 
-function login(){
-document.getElementById("login").style.display="none";
-document.getElementById("dashboard").style.display="block";
-balance=10;
-document.getElementById("bal").innerText=balance;
-
+/* LOGIN AUTO */
+window.onload=()=>{
 document.getElementById("ref").innerText=
 window.location.href+"?ref=ceylonrs";
 }
 
-/* DAILY BONUS */
+/* BONUS */
 function reward(){
-balance+=5;
-document.getElementById("bal").innerText=balance;
+bal+=5;
+document.getElementById("bal").innerText=bal;
 }
 
-/* SPIN */
+/* SPIN WHEEL */
 function spin(){
-let win=Math.floor(Math.random()*20);
-balance+=win;
-document.getElementById("bal").innerText=balance;
-alert("You won "+win);
+let win=Math.floor(Math.random()*30);
+rotation += 1800 + Math.random()*360;
+
+document.getElementById("wheel").style.transform="rotate("+rotation+"deg)";
+
+setTimeout(()=>{
+bal+=win;
+document.getElementById("bal").innerText=bal;
+alert("You won "+win+" CRS");
+},4000);
 }
 
 </script>
