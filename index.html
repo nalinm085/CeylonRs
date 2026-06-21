@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ceylon RS v1.1</title>
+<title>Ceylon RS v1.2</title>
 
 <style>
 body{
@@ -13,6 +13,7 @@ background:#050810;
 color:white;
 }
 
+/* HEADER */
 header{
 display:flex;
 justify-content:space-between;
@@ -22,13 +23,16 @@ position:sticky;
 top:0;
 }
 
+/* CARDS */
 .card{
 background:#101623;
 margin:15px;
 padding:15px;
 border-radius:15px;
+box-shadow:0 0 10px rgba(0,255,255,0.1);
 }
 
+/* BUTTON */
 button{
 padding:10px;
 border:none;
@@ -36,25 +40,10 @@ border-radius:10px;
 background:linear-gradient(90deg,#00f2ff,#7000ff);
 color:black;
 font-weight:bold;
+cursor:pointer;
 }
 
-/* SPIN WHEEL */
-#wheel{
-width:200px;
-height:200px;
-border-radius:50%;
-border:5px solid white;
-margin:auto;
-transition:4s;
-display:flex;
-align-items:center;
-justify-content:center;
-}
-
-.center{
-text-align:center;
-}
-
+/* GRID */
 .grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
@@ -67,7 +56,27 @@ padding:15px;
 border-radius:10px;
 text-align:center;
 cursor:pointer;
+transition:0.3s;
 }
+.box:hover{
+transform:scale(1.05);
+}
+
+/* WHEEL */
+#wheel{
+width:180px;
+height:180px;
+border-radius:50%;
+border:5px solid #00f2ff;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:4s cubic-bezier(0.1,0.7,0.1,1);
+}
+
+.center{text-align:center;}
+
 </style>
 </head>
 
@@ -78,15 +87,17 @@ cursor:pointer;
 <div>💰 <span id="bal">10</span></div>
 </header>
 
+<!-- SPIN -->
 <div class="card center">
-<h4>Lucky Spin</h4>
+<h3>Lucky Spin</h3>
 <div id="wheel">SPIN</div>
 <br>
 <button onclick="spin()">SPIN NOW</button>
 </div>
 
+<!-- GAMES -->
 <div class="card">
-<h4>Games</h4>
+<h3>Games</h3>
 <div class="grid">
 <div class="box">🎯 Mines</div>
 <div class="box">🎟 Scratch</div>
@@ -95,14 +106,15 @@ cursor:pointer;
 </div>
 </div>
 
+<!-- REF -->
 <div class="card">
-<h4>Referral Link</h4>
+<h3>Referral Link</h3>
 <p id="ref"></p>
 </div>
 
-<!-- AD SPACE -->
+<!-- AD BANNER -->
 <div class="card center">
-<p>Ad Banner 300x250</p>
+<p>Ad Space (300x250)</p>
 </div>
 
 <script>
@@ -110,30 +122,40 @@ cursor:pointer;
 let bal=10;
 let rotation=0;
 
-/* LOGIN AUTO */
+/* INIT */
 window.onload=()=>{
 document.getElementById("ref").innerText=
 window.location.href+"?ref=ceylonrs";
 }
 
-/* BONUS */
+/* 🎁 BONUS (SMARTLINK HERE) */
 function reward(){
+
+// SMARTLINK (Adsterra)
+window.open("https://www.profitableratecpm.com/29723325","_blank");
+
 bal+=5;
 document.getElementById("bal").innerText=bal;
+
+alert("Bonus Added + Smartlink Opened");
 }
 
-/* SPIN WHEEL */
+/* 🎡 SPIN */
 function spin(){
+
 let win=Math.floor(Math.random()*30);
+
 rotation += 1800 + Math.random()*360;
 
-document.getElementById("wheel").style.transform="rotate("+rotation+"deg)";
+document.getElementById("wheel").style.transform=
+"rotate("+rotation+"deg)";
 
 setTimeout(()=>{
 bal+=win;
 document.getElementById("bal").innerText=bal;
 alert("You won "+win+" CRS");
 },4000);
+
 }
 
 </script>
