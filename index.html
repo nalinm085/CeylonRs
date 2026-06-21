@@ -2,389 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ceylon RS | Professional Web3 Gaming Hub</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ceylon RS | Mines Game</title>
+    <script type="text/javascript" src="//www.higheffectrevenuegate.com/eb/7e/c3/eb7ec3152d1142278061482813132326.js"></script>
     <style>
-        :root {
-            --bg: #050810;
-            --card: rgba(16, 22, 35, 0.85);
-            --neon-blue: #00f2ff;
-            --neon-purple: #7000ff;
-            --text: #ffffff;
-            --text-muted: #8F9BB3;
-            --gold: #ffcc00;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; -webkit-text-size-adjust: 100%; }
-
-        .bg-glow {
-            position: fixed; width: 300px; height: 300px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(112, 0, 255, 0.12), transparent 70%);
-            filter: blur(40px); z-index: -1;
-        }
-
-        /* --- AUTH SCREEN --- */
-        #auth-screen {
-            position: fixed; top:0; left:0; width:100%; height:100%; background: var(--bg);
-            display: flex; justify-content: center; align-items: center; z-index: 999; padding: 15px;
-        }
-        .auth-card {
-            background: var(--card); padding: 35px 25px; border-radius: 24px; width: 100%; max-width: 360px;
-            text-align: center; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(20px);
-        }
-        .auth-card h1 { font-size: 26px; font-weight: 900; letter-spacing: 2px; margin-bottom: 8px; color: var(--neon-blue); }
-        .auth-card p { color: var(--text-muted); font-size: 13px; margin-bottom: 20px; }
-        .auth-input {
-            width: 100%; padding: 14px; margin-bottom: 14px; border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0,0,0,0.4);
-            color: white; font-size: 14px; outline: none;
-        }
-        .auth-input:focus { border-color: var(--neon-blue); }
-
-        /* --- MAIN DASHBOARD INTERFACE --- */
-        #dashboard-screen { display: none; }
-        .header {
-            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
-            background: rgba(10, 15, 28, 0.9); border-bottom: 1px solid rgba(255,255,255,0.08);
-            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px);
-        }
-        .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; color: var(--neon-blue); }
-        .balance-card { background: rgba(255,255,255,0.05); padding: 6px 16px; border-radius: 50px; border: 1px solid var(--neon-blue); font-size: 14px; font-weight: bold; }
-
-        .main-grid { display: flex; flex-direction: column; gap: 15px; padding: 15px; max-width: 1200px; margin: auto; }
-        .panel-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .price-up { color: #00ff88; font-weight: bold; font-size: 14px; margin-left: 5px; }
-
-        /* Referral UI */
-        .ref-box { display: flex; gap: 8px; margin-top: 12px; }
-        .ref-url { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); flex: 1; font-size: 12px; color: var(--neon-blue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; align-self: center; }
-
-        /* Games Grid */
-        .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
-        .game-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
-            padding: 25px 15px; border-radius: 18px; text-align: center; cursor: pointer;
-            transition: 0.3s; border: 1px solid rgba(255,255,255,0.06);
-        }
-        .game-card:hover { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 242, 255, 0.15); }
-        .game-card i { font-size: 32px; margin-bottom: 12px; color: var(--neon-blue); }
-        .game-card h4 { font-size: 14px; }
-
-        /* Activity Feed */
-        .feed-item { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; color: #ccc; }
-        .feed-item b { color: var(--neon-blue); }
-
-        /* Overlay Modals */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; }
-        .modal-content { background: #101623; padding: 30px 20px; border-radius: 24px; text-align: center; max-width: 340px; width: 90%; border: 1px solid rgba(255,255,255,0.08); }
-
-        .btn-action {
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-            color: black; border: none; padding: 12px 28px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px;
-        }
-
-        /* Simple Game Styles */
-        .box-item { font-size: 50px; cursor: pointer; transition: 0.2s; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .box-item:hover { transform: scale(1.1); background: rgba(0, 242, 255, 0.1); border-color: var(--neon-blue); }
-
-        @media (min-width: 769px) {
-            .main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        }
+        :root { --bg: #050810; --neon-blue: #00f2ff; --card: rgba(16, 22, 35, 0.85); }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
+        .game-container { max-width: 400px; margin: auto; background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #333; }
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 20px 0; }
+        .cell { aspect-ratio: 1; background: #1a2234; border-radius: 8px; cursor: pointer; border: 1px solid #444; }
+        .btn { background: var(--neon-blue); color: #000; padding: 12px 25px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="bg-glow" style="top: 5%; left: 5%;"></div>
-<div class="bg-glow" style="bottom: 5%; right: 5%;"></div>
-
-<div id="auth-screen">
-    <div class="auth-card">
-        <h1>CEYLON RS</h1>
-        <p>Login to your secure gaming dashboard</p>
-        <input type="email" id="auth-email" class="auth-input" placeholder="Enter Gmail Address">
-        <input type="password" id="auth-password" class="auth-input" placeholder="Access Password">
-        <button class="btn-action" style="width: 100%; margin-top: 5px;" onclick="handleAuth()">ENTER DASHBOARD</button>
+<div class="game-container">
+    <h2>CRS MINES</h2>
+    <div id="wallet">Balance: <span id="balance">100.00</span> CRS</div>
+    
+    <div id="banner-ad" style="margin: 15px 0;">
+        <script type="text/javascript" src="//www.higheffectrevenuegate.com/5c/7f/45/5c7f4529329723329.js"></script>
     </div>
-</div>
 
-<div id="dashboard-screen">
-    <header class="header">
-        <div class="logo">CEYLON <span style="color: #fff;">RS</span></div>
-        <div class="balance-card">
-            <i class="fa-solid fa-wallet" style="color: #00f2ff; margin-right: 6px;"></i>
-            <span id="crs-balance">0.00</span> <small>CRS</small>
-        </div>
-    </header>
-
-    <div class="main-grid">
-        <div class="content-left">
-            <div class="panel-card">
-                <div class="chart-header">
-                    <div>
-                        <h3 style="font-size: 15px;">RS / USDT <small style="color: #888;">Ceyloncoin Live</small></h3>
-                        <h2 id="live-price" style="font-size: 22px; margin-top: 2px;">⚡ Fetching Realtime...</h2>
-                    </div>
-                    <div>
-                        <button class="btn-action" style="padding: 6px 14px; font-size: 11px;" onclick="dailyReward()">BONUS</button>
-                    </div>
-                </div>
-                <div style="width:100%; height:120px; position:relative;">
-                    <canvas id="crsChart"></canvas>
-                </div>
-            </div>
-
-            <div class="panel-card" style="margin-top: 15px; margin-bottom: 15px;">
-                <h3 style="font-size: 15px;"><i class="fa-solid fa-share-nodes" style="color: var(--neon-blue); margin-right: 6px;"></i> REFERRAL ENGINE</h3>
-                <div class="ref-box">
-                    <div class="ref-url" id="ref-link-display">Generating link...</div>
-                    <button class="btn-action" style="padding: 8px 16px; border-radius: 10px; font-size: 12px;" onclick="copyReferral()">COPY</button>
-                </div>
-            </div>
-
-            <div class="game-grid">
-                <div class="game-card" onclick="openMysteryBox()">
-                    <i class="fa-solid fa-gift"></i>
-                    <h4>MYSTERY BOX</h4>
-                </div>
-                <div class="game-card" onclick="openCoinFlip()">
-                    <i class="fa-solid fa-coins"></i>
-                    <h4>COIN FLIP</h4>
-                </div>
-                <div class="game-card" onclick="openInstantWin()">
-                    <i class="fa-solid fa-bolt"></i>
-                    <h4>INSTANT CLAIM</h4>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel-card" style="height: fit-content;">
-            <h3 style="margin-bottom: 10px; font-size: 15px;"><i class="fa-solid fa-bolt" style="color: #00f2ff;"></i> LIVE FEED</h3>
-            <div id="activity-feed"></div>
-        </div>
-    </div>
-</div>
-
-<div id="game-overlay" class="overlay">
-    <div class="modal-content" id="dynamic-game-content">
-        </div>
+    <div class="grid" id="grid"></div>
+    <button class="btn" onclick="startGame()">START GAME</button>
+    <br><br>
+    <a href="https://www.higheffectrevenuegate.com/d6/3d/8c/d63d8c4e4329723325.js" class="btn" style="background:#7000ff; color:white; text-decoration:none;">DAILY LUCKY SPIN (FREE CRS)</a>
 </div>
 
 <script>
-    // --- ADSTERRA AD ENGINE ---
-    const AD_LINK = "https://www.effectivecpmnetwork.com/ci8tnjgpix?key=4b92b8ccd2f66278e89d64a99e5eacf0";
-    function triggerAd() { window.open(AD_LINK, '_blank'); }
-
-    // --- CORE ENGINE ---
-    function openModal(htmlContent) {
-        document.getElementById('dynamic-game-content').innerHTML = htmlContent;
-        document.getElementById('game-overlay').style.display = 'flex';
-    }
-    function closeGame() { document.getElementById('game-overlay').style.display = 'none'; }
-    function updateBalDisplay() {
-        localStorage.setItem('web_crs_balance', balance);
-        document.getElementById('crs-balance').innerText = balance.toFixed(2);
-    }
-
-    // GAME 1: MYSTERY BOX (Super Simple)
-    let boxPlays = 0;
-    function openMysteryBox() {
-        let html = `
-            <h2 style="font-size: 20px; color: var(--neon-blue); margin-bottom: 5px;">MYSTERY BOX</h2>
-            <p style="font-size: 12px; color: #ccc; margin-bottom: 25px;">Just click a box to reveal your prize!</p>
-            <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 25px;">
-                <div class="box-item" onclick="pickBox()">🎁</div>
-                <div class="box-item" onclick="pickBox()">🎁</div>
-                <div class="box-item" onclick="pickBox()">🎁</div>
-            </div>
-            <button class="btn-action" style="background: transparent; color: #fff; border: 1px solid #444; width: 100%;" onclick="closeGame()">CLOSE</button>
-        `;
-        openModal(html);
-    }
-
-    function pickBox() {
-        boxPlays++;
-        if (boxPlays % 2 === 0) triggerAd(); // හැම වාර 2කටම ඇඩ් එකක්
-        
-        let win = Math.floor(Math.random() * 5) + 1; // 1 - 5 අතර ලකුණු
-        balance += win;
-        updateBalDisplay();
-        alert("🎉 You won " + win + " CRS!");
-        closeGame(); // එක පාරක් කරාම ආයේ මුලට යනවා
-    }
-
-    // GAME 2: COIN FLIP (Very Easy)
-    let coinPlays = 0;
-    function openCoinFlip() {
-        let html = `
-            <h2 style="font-size: 20px; color: #ffcc00; margin-bottom: 5px;">COIN FLIP</h2>
-            <p style="font-size: 12px; color: #ccc; margin-bottom: 20px;">Pick Heads or Tails.</p>
-            <div style="font-size: 60px; margin-bottom: 20px;">🪙</div>
-            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
-                <button class="btn-action" style="flex: 1; background: #00ff88; color: black;" onclick="playCoin('Heads')">HEADS</button>
-                <button class="btn-action" style="flex: 1; background: #ff3366; color: white;" onclick="playCoin('Tails')">TAILS</button>
-            </div>
-            <button class="btn-action" style="background: transparent; color: #fff; border: 1px solid #444; width: 100%;" onclick="closeGame()">CLOSE</button>
-        `;
-        openModal(html);
-    }
-
-    function playCoin(choice) {
-        coinPlays++;
-        if (coinPlays % 2 === 0) triggerAd();
-
-        let result = Math.random() < 0.5 ? 'Heads' : 'Tails';
-        if (choice === result) {
-            balance += 3;
-            updateBalDisplay();
-            alert("✅ It's " + result + "! You won 3 CRS.");
-        } else {
-            alert("❌ It was " + result + ". Try again!");
+    let balance = 100.00;
+    function startGame() {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+        for(let i=0; i<25; i++) {
+            let div = document.createElement('div');
+            div.className = 'cell';
+            div.onclick = function() { this.style.background = '#00f2ff'; balance += 5; updateUI(); };
+            grid.appendChild(div);
         }
     }
-
-    // GAME 3: INSTANT CLAIM (No brainer)
-    let claimPlays = 0;
-    function openInstantWin() {
-        let html = `
-            <h2 style="font-size: 20px; color: #00ff88; margin-bottom: 5px;">INSTANT CLAIM</h2>
-            <p style="font-size: 12px; color: #ccc; margin-bottom: 25px;">Just click the button to claim free CRS.</p>
-            <div style="font-size: 50px; margin-bottom: 20px;">⚡</div>
-            <button class="btn-action" style="width: 100%; margin-bottom: 15px; font-size: 16px;" onclick="claimReward()">CLAIM NOW</button>
-            <button class="btn-action" style="background: transparent; color: #fff; border: 1px solid #444; width: 100%;" onclick="closeGame()">CLOSE</button>
-        `;
-        openModal(html);
-    }
-
-    function claimReward() {
-        claimPlays++;
-        if (claimPlays % 2 === 0) triggerAd(); // හැම වාර 2කටම ඇඩ් එකක්
-
-        let win = (Math.random() * 2).toFixed(2); // 0.00 - 2.00 අතර ලකුණු
-        balance += parseFloat(win);
-        updateBalDisplay();
-        alert("💸 You instantly claimed " + win + " CRS!");
-    }
-
-    // --- DASHBOARD CORE LOGIC ---
-    const REFERRAL_REWARD_POINTS = 50.00;
-    let balance = parseFloat(localStorage.getItem('web_crs_balance')) || 0.00;
-    let currentUser = localStorage.getItem('web_crs_user') || "";
-
-    window.onload = function() {
-        checkReferralBonus();
-        if (currentUser) showDashboard();
-    }
-
-    function handleAuth() {
-        let email = document.getElementById('auth-email').value.trim();
-        let pass = document.getElementById('auth-password').value.trim();
-        if (email === "" || !email.includes("@") || pass.length < 4) {
-            alert("Please enter a valid email and a password.");
-            return;
-        }
-        localStorage.setItem('web_crs_user', email);
-        currentUser = email;
-        if(balance === 0) { balance = 10.00; localStorage.setItem('web_crs_balance', balance); }
-        showDashboard();
-    }
-
-    function showDashboard() {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('dashboard-screen').style.display = 'block';
-        updateBalDisplay();
-        
-        let username = "CeylonCryptoHub";
-        document.getElementById('ref-link-display').innerText = window.location.origin + window.location.pathname + "?ref=" + username;
-        initChartAndPrice();
-    }
-
-    function checkReferralBonus() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const referrer = urlParams.get('ref');
-        if (referrer && !localStorage.getItem('web_crs_referred_done')) {
-            balance += REFERRAL_REWARD_POINTS;
-            updateBalDisplay();
-            localStorage.setItem('web_crs_referred_done', 'true');
-            alert(`Welcome! You received ${REFERRAL_REWARD_POINTS} CRS via Referral from ${referrer}!`);
-        }
-    }
-
-    function copyReferral() {
-        let linkText = document.getElementById('ref-link-display').innerText;
-        navigator.clipboard.writeText(linkText);
-        alert("Referral Link copied!");
-    }
-
-    let crsChart;
-    let baseLivePrice = 0.0000008366;
-    let priceHistory = [0.00000079, 0.00000081, 0.00000080, 0.00000083, 0.00000082, 0.00000084, 0.00000083, baseLivePrice];
-
-    function initChartAndPrice() {
-        const ctx = document.getElementById('crsChart').getContext('2d');
-        crsChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['', '', '', '', '', '', '', ''],
-                datasets: [{
-                    data: priceHistory,
-                    borderColor: '#00f2ff',
-                    borderWidth: 2.5,
-                    tension: 0.4,
-                    pointRadius: 0,
-                    fill: true,
-                    backgroundColor: 'rgba(0, 242, 255, 0.05)'
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
-        });
-
-        updateLivePriceFeed();
-        setInterval(updateLivePriceFeed, 5000);
-    }
-
-    function updateLivePriceFeed() {
-        let variation = (Math.random() - 0.5) * 0.000000015;
-        let finalShowPrice = baseLivePrice + variation;
-        let changePercentage = 24.25 + (Math.random() - 0.5) * 0.5;
-        
-        document.getElementById('live-price').innerHTML = `$${finalShowPrice.toFixed(8)} <span class="price-up" id="price-change" style="color: #00ff88">+${changePercentage.toFixed(2)}%</span>`;
-
-        priceHistory.push(finalShowPrice);
-        priceHistory.shift();
-        crsChart.update();
-    }
-
-    const names = ["Nalin99", "Crypto_King", "Shalu_R", "Sampath_X", "Amila_Dev", "RS_Payer"];
-    const feeds = document.getElementById('activity-feed');
-    function addFeed() {
-        if(!feeds) return;
-        let name = names[Math.floor(Math.random() * names.length)];
-        let win = (Math.random() * 20).toFixed(2);
-        let div = document.createElement('div');
-        div.className = 'feed-item';
-        div.innerHTML = `<b>${name}</b> just secured <b>${win} CRS</b>`;
-        feeds.prepend(div);
-        if (feeds.children.length > 4) feeds.lastChild.remove();
-    }
-    setInterval(addFeed, 5000);
-
-    function dailyReward() {
-        let lastClaim = localStorage.getItem('web_crs_daily');
-        let today = new Date().toDateString();
-        if (lastClaim === today) {
-            alert("Already claimed today!");
-        } else {
-            balance += 15;
-            updateBalDisplay();
-            localStorage.setItem('web_crs_daily', today);
-            triggerAd(); // Daily රිවෝඩ් එක ගන්නකොටත් ඇඩ් එකක් දෙනවා
-            alert("15 CRS added successfully!");
-        }
-    }
+    function updateUI() { document.getElementById('balance').innerText = balance.toFixed(2); }
 </script>
+
 </body>
 </html>
