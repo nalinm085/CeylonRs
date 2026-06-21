@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ceylon RS v1.4</title>
+<title>Ceylon RS v1.5</title>
 
 <style>
 body{
@@ -21,17 +21,14 @@ padding:15px;
 background:#101623;
 position:sticky;
 top:0;
-z-index:10;
 }
 
-/* CARDS */
+/* CARD */
 .card{
 background:#101623;
 margin:15px;
 padding:15px;
 border-radius:15px;
-backdrop-filter:blur(10px);
-box-shadow:0 0 15px rgba(0,255,255,0.05);
 }
 
 /* BUTTON */
@@ -60,11 +57,9 @@ text-align:center;
 cursor:pointer;
 transition:0.3s;
 }
-.box:hover{
-transform:scale(1.05);
-}
+.box:hover{transform:scale(1.05);}
 
-/* SPIN WHEEL */
+/* WHEEL */
 #wheel{
 width:180px;
 height:180px;
@@ -75,10 +70,9 @@ display:flex;
 align-items:center;
 justify-content:center;
 transition:4s cubic-bezier(0.1,0.7,0.1,1);
-font-weight:bold;
 }
 
-/* FLOAT SOCIAL BAR PLACEHOLDER */
+/* SOCIAL BAR */
 .social-bar{
 position:fixed;
 bottom:0;
@@ -102,6 +96,7 @@ z-index:999;
 <div>💰 <span id="bal">10</span></div>
 </header>
 
+<!-- SPIN -->
 <div class="card center">
 <h3>Lucky Spin</h3>
 <div id="wheel">SPIN</div>
@@ -109,28 +104,31 @@ z-index:999;
 <button onclick="spin()">SPIN NOW</button>
 </div>
 
+<!-- GAMES -->
 <div class="card">
 <h3>Games</h3>
 <div class="grid">
 <div class="box">🎯 Mines</div>
 <div class="box">🎟 Scratch</div>
-<div class="box" onclick="reward()">🎁 Bonus</div>
+<div class="box" onclick="bonus()">🎁 Bonus (Ad Reward)</div>
 <div class="box">👥 Referral</div>
 </div>
 </div>
 
+<!-- REF -->
 <div class="card">
 <h3>Referral Link</h3>
 <p id="ref"></p>
 </div>
 
+<!-- AD SPACE -->
 <div class="card center">
-<p>Ad Banner Space (300x250)</p>
+<p>Ad Banner (300x250)</p>
 </div>
 
-<!-- SOCIAL BAR READY AREA -->
+<!-- SOCIAL BAR PLACEHOLDER -->
 <div class="social-bar">
-⚡ Ad Space Ready | Ceylon RS v1.4
+⚡ Adsterra Social Bar Active Zone
 </div>
 
 <script>
@@ -142,29 +140,36 @@ let rotation=0;
 let urlParams=new URLSearchParams(window.location.search);
 let ref=urlParams.get("ref");
 
-/* LOGIN */
-function loginSystem(){
-
-if(ref && !localStorage.getItem("ref_done")){
-bal+=20;
-localStorage.setItem("ref_done","yes");
-alert("Referral Bonus +20 CRS from "+ref);
-}
-
-}
-
 /* INIT */
 window.onload=()=>{
 document.getElementById("ref").innerText=
 window.location.href+"?ref=ceylonrs";
 
-loginSystem();
+checkReferral();
 }
 
-/* BONUS */
-function reward(){
-bal+=5;
+/* 🔥 AD-BASED BONUS SYSTEM */
+function bonus(){
+
+// STEP 1: OPEN AD (SMARTLINK)
+let adWindow = window.open("https://www.profitableratecpm.com/29723325","_blank");
+
+// STEP 2: WAIT TIME (simulate ad engagement)
+setTimeout(()=>{
+bal += 15;
 document.getElementById("bal").innerText=bal;
+alert("🎁 Ad Reward Added +15 CRS");
+},8000);
+
+}
+
+/* REFERRAL CHECK (LOGIN STYLE SIMULATION) */
+function checkReferral(){
+if(ref && !localStorage.getItem("ref_done")){
+bal += 20;
+localStorage.setItem("ref_done","yes");
+alert("Referral Bonus +20 CRS from "+ref);
+}
 }
 
 /* SPIN */
