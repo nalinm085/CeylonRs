@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ceylon RS v1.2</title>
+<title>Ceylon RS v1.3</title>
 
 <style>
 body{
@@ -23,13 +23,12 @@ position:sticky;
 top:0;
 }
 
-/* CARDS */
+/* CARD */
 .card{
 background:#101623;
 margin:15px;
 padding:15px;
 border-radius:15px;
-box-shadow:0 0 10px rgba(0,255,255,0.1);
 }
 
 /* BUTTON */
@@ -40,7 +39,6 @@ border-radius:10px;
 background:linear-gradient(90deg,#00f2ff,#7000ff);
 color:black;
 font-weight:bold;
-cursor:pointer;
 }
 
 /* GRID */
@@ -56,13 +54,9 @@ padding:15px;
 border-radius:10px;
 text-align:center;
 cursor:pointer;
-transition:0.3s;
-}
-.box:hover{
-transform:scale(1.05);
 }
 
-/* WHEEL */
+/* SPIN */
 #wheel{
 width:180px;
 height:180px;
@@ -76,7 +70,6 @@ transition:4s cubic-bezier(0.1,0.7,0.1,1);
 }
 
 .center{text-align:center;}
-
 </style>
 </head>
 
@@ -87,7 +80,6 @@ transition:4s cubic-bezier(0.1,0.7,0.1,1);
 <div>💰 <span id="bal">10</span></div>
 </header>
 
-<!-- SPIN -->
 <div class="card center">
 <h3>Lucky Spin</h3>
 <div id="wheel">SPIN</div>
@@ -95,7 +87,6 @@ transition:4s cubic-bezier(0.1,0.7,0.1,1);
 <button onclick="spin()">SPIN NOW</button>
 </div>
 
-<!-- GAMES -->
 <div class="card">
 <h3>Games</h3>
 <div class="grid">
@@ -106,15 +97,14 @@ transition:4s cubic-bezier(0.1,0.7,0.1,1);
 </div>
 </div>
 
-<!-- REF -->
 <div class="card">
 <h3>Referral Link</h3>
 <p id="ref"></p>
 </div>
 
-<!-- AD BANNER -->
+<!-- AD SPACE -->
 <div class="card center">
-<p>Ad Space (300x250)</p>
+<p>Ad Banner 300x250</p>
 </div>
 
 <script>
@@ -122,27 +112,43 @@ transition:4s cubic-bezier(0.1,0.7,0.1,1);
 let bal=10;
 let rotation=0;
 
+/* STORE REF PARAM */
+let urlParams = new URLSearchParams(window.location.search);
+let ref = urlParams.get("ref");
+
+/* LOGIN FUNCTION */
+function loginSystem(){
+
+// simulate login trigger
+localStorage.setItem("logged","yes");
+
+if(ref && !localStorage.getItem("refUsed")){
+
+// BONUS ONLY ON LOGIN
+bal += 20;
+localStorage.setItem("refUsed","true");
+
+alert("Referral Bonus Added: +20 CRS from " + ref);
+}
+
+}
+
 /* INIT */
 window.onload=()=>{
 document.getElementById("ref").innerText=
 window.location.href+"?ref=ceylonrs";
+
+loginSystem();
 }
 
-/* 🎁 BONUS (SMARTLINK HERE) */
+/* BONUS */
 function reward(){
-
-// SMARTLINK (Adsterra)
-window.open("https://www.profitableratecpm.com/29723325","_blank");
-
 bal+=5;
 document.getElementById("bal").innerText=bal;
-
-alert("Bonus Added + Smartlink Opened");
 }
 
-/* 🎡 SPIN */
+/* SPIN */
 function spin(){
-
 let win=Math.floor(Math.random()*30);
 
 rotation += 1800 + Math.random()*360;
@@ -155,7 +161,6 @@ bal+=win;
 document.getElementById("bal").innerText=bal;
 alert("You won "+win+" CRS");
 },4000);
-
 }
 
 </script>
