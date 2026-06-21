@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ceylon RS v1.6</title>
+<title>Ceylon RS v1.7</title>
 
 <style>
 body{
@@ -11,6 +11,49 @@ margin:0;
 font-family:Arial;
 background:#050810;
 color:white;
+}
+
+/* LOGIN */
+#login{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+
+.login-box{
+background:#101623;
+padding:25px;
+border-radius:15px;
+width:85%;
+max-width:350px;
+}
+
+input{
+width:100%;
+padding:12px;
+margin:8px 0;
+border:none;
+border-radius:10px;
+outline:none;
+}
+
+button{
+padding:10px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#00f2ff,#7000ff);
+color:black;
+font-weight:bold;
+cursor:pointer;
+width:100%;
+margin-top:10px;
+}
+
+/* DASHBOARD */
+#dashboard{
+display:none;
 }
 
 /* HEADER */
@@ -23,30 +66,12 @@ position:sticky;
 top:0;
 }
 
-/* WALLET CARD */
-.wallet{
+/* CARDS */
+.card{
+background:#101623;
 margin:15px;
-padding:20px;
-border-radius:18px;
-background:linear-gradient(135deg,#0d1422,#101623);
-box-shadow:0 0 20px rgba(0,255,255,0.08);
-}
-
-.balance{
-font-size:26px;
-font-weight:bold;
-color:#00f2ff;
-}
-
-/* BUTTON */
-button{
-padding:10px;
-border:none;
-border-radius:10px;
-background:linear-gradient(90deg,#00f2ff,#7000ff);
-color:black;
-font-weight:bold;
-cursor:pointer;
+padding:15px;
+border-radius:15px;
 }
 
 /* GRID */
@@ -60,31 +85,10 @@ margin:15px;
 .box{
 background:#0d1422;
 padding:15px;
-border-radius:12px;
+border-radius:10px;
 text-align:center;
 cursor:pointer;
 }
-
-/* HISTORY */
-.history{
-margin:15px;
-padding:15px;
-background:#101623;
-border-radius:15px;
-}
-
-.item{
-display:flex;
-justify-content:space-between;
-padding:8px 0;
-border-bottom:1px solid rgba(255,255,255,0.05);
-font-size:13px;
-}
-
-.green{color:#00ff88;}
-.red{color:#ff4d4d;}
-.blue{color:#00c2ff;}
-.gold{color:#ffcc00;}
 
 /* SOCIAL BAR */
 .social-bar{
@@ -94,8 +98,15 @@ left:0;
 width:100%;
 background:#111827;
 padding:10px;
-text-align:center;
 font-size:12px;
+text-align:center;
+}
+
+/* BALANCE */
+.balance{
+font-size:22px;
+color:#00f2ff;
+font-weight:bold;
 }
 
 .center{text-align:center;}
@@ -104,18 +115,28 @@ font-size:12px;
 
 <body>
 
+<!-- LOGIN -->
+<div id="login">
+<div class="login-box">
+<h3>CEYLON RS LOGIN</h3>
+<input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">ENTER</button>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+
 <header>
 <h3>CEYLON RS</h3>
 <div>💰 <span id="bal">10</span></div>
 </header>
 
-<!-- WALLET -->
-<div class="wallet">
-<div>Available Balance</div>
-<div class="balance" id="balance">10.00 CRS</div>
+<div class="card center">
+<div class="balance" id="balance">10 CRS</div>
 </div>
 
-<!-- ACTIONS -->
 <div class="grid">
 <div class="box" onclick="spin()">🎡 Spin</div>
 <div class="box" onclick="bonus()">🎁 Bonus</div>
@@ -123,87 +144,84 @@ font-size:12px;
 <div class="box">🎟 Scratch</div>
 </div>
 
-<!-- HISTORY -->
-<div class="history">
-<h4>Transaction History</h4>
-<div id="history"></div>
+<div class="card">
+<h4>Referral Link</h4>
+<p id="ref"></p>
 </div>
 
-<!-- AD SPACE -->
-<div class="wallet center">
+<div class="card center">
 <p>Ad Banner (300x250)</p>
 </div>
 
-<!-- SOCIAL BAR -->
 <div class="social-bar">
-⚡ Ad Zone | Ceylon RS v1.6
+⚡ Adsterra Social Bar Active Zone
+</div>
+
 </div>
 
 <script>
 
 let bal = 10;
-let history = [];
+let logged = false;
+
+/* LOGIN */
+function login(){
+
+let email = document.getElementById("email").value;
+let pass = document.getElementById("pass").value;
+
+if(email=="" || pass==""){
+alert("Fill all fields");
+return;
+}
+
+logged = true;
+localStorage.setItem("logged","yes");
+
+document.getElementById("login").style.display="none";
+document.getElementById("dashboard").style.display="block";
+
+init();
+}
 
 /* INIT */
-window.onload = () => {
-render();
+function init(){
+
+document.getElementById("ref").innerText =
+window.location.href+"?ref=ceylonrs";
+
 }
 
-/* ADD TRANSACTION */
-function addHistory(type, amount){
-
-let color = "green";
-if(type === "Bonus") color = "blue";
-if(type === "Referral") color = "gold";
-
-let time = new Date().toLocaleTimeString();
-
-history.unshift({
-type, amount, color, time
-});
-
-render();
-}
-
-/* RENDER UI */
-function render(){
-
-document.getElementById("bal").innerText = bal.toFixed(2) + " CRS";
-
-let html = "";
-history.forEach(h=>{
-html += `
-<div class="item">
-<span class="${h.color}">
-${h.type} +${h.amount}
-</span>
-<span>${h.time}</span>
-</div>`;
-});
-
-document.getElementById("history").innerHTML = html;
-}
-
-/* BONUS (SMARTLINK READY ZONE) */
+/* BONUS → SMARTLINK (MONETIZATION CORE) */
 function bonus(){
 
 window.open("https://www.profitableratecpm.com/29723325","_blank");
 
-bal += 10;
-addHistory("Bonus",10);
+// reward after engagement simulation
+setTimeout(()=>{
+bal += 12;
+update();
+alert("🎁 Bonus Added +12 CRS");
+},7000);
 
-render();
 }
 
 /* SPIN */
 function spin(){
 
-let win = Math.floor(Math.random()*30);
+let win = Math.floor(Math.random()*25);
+
+setTimeout(()=>{
 bal += win;
+update();
+alert("You won "+win+" CRS");
+},3000);
+}
 
-addHistory("Spin", win);
-
-render();
+/* UPDATE */
+function update(){
+document.getElementById("bal").innerText = bal;
+document.getElementById("balance").innerText = bal+" CRS";
 }
 
 </script>
