@@ -62,11 +62,9 @@
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .price-up { color: #00ff88; font-weight: bold; font-size: 14px; margin-left: 5px; }
 
-        /* Referral UI */
         .ref-box { display: flex; gap: 8px; margin-top: 12px; }
         .ref-url { background: rgba(0,0,0,0.4); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); flex: 1; font-size: 12px; color: var(--neon-blue); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; align-self: center; }
 
-        /* Games Grid */
         .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
         .game-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
@@ -77,15 +75,12 @@
         .game-card i { font-size: 32px; margin-bottom: 12px; color: var(--neon-blue); }
         .game-card h4 { font-size: 14px; }
 
-        /* Activity Feed */
         .feed-item { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 12px; color: #ccc; }
         .feed-item b { color: var(--neon-blue); }
 
-        /* Overlay Modals */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; }
         .modal-content { background: #101623; padding: 30px 20px; border-radius: 24px; text-align: center; max-width: 340px; width: 90%; border: 1px solid rgba(255,255,255,0.08); }
 
-        /* Spin Wheel Dynamic */
         .wheel-container { width: 220px; height: 220px; border: 4px solid #fff; border-radius: 50%; margin: 15px auto; position: relative; transition: 4s cubic-bezier(0.1, 0.9, 0.1, 1); }
         .wheel-pointer { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 16px; height: 24px; background: red; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
 
@@ -94,7 +89,6 @@
             color: black; border: none; padding: 12px 28px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px;
         }
 
-        /* Adsterra Optimized Slots */
         .ad-container { width: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; margin: 10px 0; border-radius: 8px; min-height: 50px; }
         .desktop-only { display: block; }
         .mobile-only { display: none; }
@@ -133,18 +127,12 @@
         </div>
     </header>
 
-    <div class="ad-container desktop-only" style="min-height: 90px; margin-top: 15px;">
-        <script>atOptions = {'key' : '032fe98872b17a79fa4b03346f57fea5', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {}};</script>
-        <script src="https://www.highperformanceformat.com/032fe98872b17a79fa4b03346f57fea5/invoke.js"></script>
-    </div>
-    <div class="ad-container mobile-only" style="min-height: 50px; margin-top: 15px;">
-        <script>atOptions = {'key' : 'bccae67670438fc6a9871ece3f812421', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {}};</script>
-        <script src="https://www.highperformanceformat.com/bccae67670438fc6a9871ece3f812421/invoke.js"></script>
+    <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998; margin-top: 15px;">
+        <iframe data-aa='2446107' src='//acceptable.a-ads.com/2446107/?size=Adaptive' style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
     </div>
 
     <div class="main-grid">
         <div class="content-left">
-            
             <div class="panel-card">
                 <div class="chart-header">
                     <div>
@@ -158,11 +146,6 @@
                 <div style="width:100%; height:120px; position:relative;">
                     <canvas id="crsChart"></canvas>
                 </div>
-            </div>
-
-            <div class="ad-container" style="background: rgba(255,255,255,0.02); padding: 10px; border: 1px solid rgba(255,255,255,0.05);">
-                <script async="async" data-cfasync="false" src="https://pl29823823.effectivecpmnetwork.com/dfda1f97186d1f9f278bc08f88539b6c/invoke.js"></script>
-                <div id="container-dfda1f97186d1f9f278bc08f88539b6c"></div>
             </div>
 
             <div class="panel-card" style="margin-top: 15px; margin-bottom: 15px;">
@@ -189,20 +172,9 @@
                     <h4>SCRATCH</h4>
                 </div>
             </div>
-            
-            <div class="ad-container" style="margin-top: 15px;">
-                <script>atOptions = {'key' : '70035095636bcf712e1befe9a65a3142', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {}};</script>
-                <script src="https://www.highperformanceformat.com/70035095636bcf712e1befe9a65a3142/invoke.js"></script>
-            </div>
-
         </div>
 
         <div class="content-right">
-            <div class="panel-card" style="margin-bottom: 15px; padding: 10px; display: flex; justify-content: center; align-items: center; min-height: 250px;">
-                 <script>atOptions = {'key' : 'b95dbbe45f5f275027014ad7c6e91149', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {}};</script>
-                 <script src="https://www.highperformanceformat.com/b95dbbe45f5f275027014ad7c6e91149/invoke.js"></script>
-            </div>
-
             <div class="panel-card" style="height: fit-content;">
                 <h3 style="margin-bottom: 10px; font-size: 15px;"><i class="fa-solid fa-bolt" style="color: #00f2ff;"></i> LIVE FEED</h3>
                 <div id="activity-feed"></div>
@@ -223,164 +195,68 @@
     </div>
 </div>
 
-<script src="https://pl29823825.effectivecpmnetwork.com/82/45/5a/82455abb1b1e76d3d19f4ca873c3df1e.js"></script>
-
 <script>
-    const REFERRAL_REWARD_POINTS = 50.00;
-    let balance = parseFloat(localStorage.getItem('web_crs_balance')) || 0.00;
+    let balance = parseFloat(localStorage.getItem('web_crs_balance')) || 10.00;
     let currentUser = localStorage.getItem('web_crs_user') || "";
 
     window.onload = function() {
-        checkReferralBonus();
         if (currentUser) showDashboard();
     }
 
     function handleAuth() {
         let email = document.getElementById('auth-email').value.trim();
-        let pass = document.getElementById('auth-password').value.trim();
-        if (email === "" || !email.includes("@") || pass.length < 4) {
-            alert("Please enter a valid email and a password.");
-            return;
+        if (email.includes("@")) {
+            localStorage.setItem('web_crs_user', email);
+            showDashboard();
         }
-        localStorage.setItem('web_crs_user', email);
-        currentUser = email;
-        if(balance === 0) { balance = 10.00; localStorage.setItem('web_crs_balance', balance); }
-        showDashboard();
     }
 
     function showDashboard() {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('dashboard-screen').style.display = 'block';
         document.getElementById('crs-balance').innerText = balance.toFixed(2);
-        
-        let username = "CeylonCryptoHub";
-        document.getElementById('ref-link-display').innerText = window.location.origin + window.location.pathname + "?ref=" + username;
         initChartAndPrice();
     }
 
-    function checkReferralBonus() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const referrer = urlParams.get('ref');
-        if (referrer && !localStorage.getItem('web_crs_referred_done')) {
-            balance += REFERRAL_REWARD_POINTS;
-            localStorage.setItem('web_crs_balance', balance);
-            localStorage.setItem('web_crs_referred_done', 'true');
-            alert(`Welcome! You received ${REFERRAL_REWARD_POINTS} CRS via Referral from ${referrer}!`);
-        }
-    }
-
+    // Chart & Price Logic
     let crsChart;
-    let baseLivePrice = 0.0000008366;
-    let priceHistory = [0.00000079, 0.00000081, 0.00000080, 0.00000083, 0.00000082, 0.00000084, 0.00000083, baseLivePrice];
-
     function initChartAndPrice() {
         const ctx = document.getElementById('crsChart').getContext('2d');
         crsChart = new Chart(ctx, {
             type: 'line',
-            data: {
-                labels: ['', '', '', '', '', '', '', ''],
-                datasets: [{
-                    data: priceHistory,
-                    borderColor: '#00f2ff',
-                    borderWidth: 2.5,
-                    tension: 0.4,
-                    pointRadius: 0,
-                    fill: true,
-                    backgroundColor: 'rgba(0, 242, 255, 0.05)'
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
+            data: { labels: new Array(8).fill(''), datasets: [{ data: [0.8, 0.82, 0.79, 0.83, 0.81, 0.85, 0.84, 0.83], borderColor: '#00f2ff', fill: true, backgroundColor: 'rgba(0, 242, 255, 0.05)' }] },
+            options: { plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
         });
-
-        updateLivePriceFeed();
-        setInterval(updateLivePriceFeed, 5000); 
     }
 
-    function updateLivePriceFeed() {
-        let variation = (Math.random() - 0.5) * 0.000000015;
-        let finalShowPrice = baseLivePrice + variation;
-        let changePercentage = 24.25 + (Math.random() - 0.5) * 0.5;
-        
-        document.getElementById('live-price').innerHTML = `$${finalShowPrice.toFixed(8)} <span class="price-up" id="price-change" style="color: #00ff88">+${changePercentage.toFixed(2)}%</span>`;
-
-        priceHistory.push(finalShowPrice);
-        priceHistory.shift();
-        crsChart.update();
-    }
-
-    function copyReferral() {
-        let linkText = document.getElementById('ref-link-display').innerText;
-        navigator.clipboard.writeText(linkText);
-        alert("Referral Link copied!");
-    }
-
-    const names = ["Nalin99", "Crypto_King", "Shalu_R", "Sampath_X", "Amila_Dev", "RS_Payer"];
-    const feeds = document.getElementById('activity-feed');
-    function addFeed() {
-        if(!feeds) return;
-        let name = names[Math.floor(Math.random() * names.length)];
-        let win = (Math.random() * 90 + 10).toFixed(2);
-        let div = document.createElement('div');
-        div.className = 'feed-item';
-        div.innerHTML = `<b>${name}</b> just secured <b>${win} CRS</b>`;
-        feeds.prepend(div);
-        if (feeds.children.length > 4) feeds.lastChild.remove();
-    }
-    setInterval(addFeed, 5000);
-
+    // Game Logic
     function openGame() { document.getElementById('game-overlay').style.display = 'flex'; drawWheel(); }
     function closeGame() { document.getElementById('game-overlay').style.display = 'none'; }
 
     const wheelCanvas = document.getElementById('wheel-canvas');
     const wctx = wheelCanvas.getContext('2d');
-    const rewards = ["10", "0", "50", "5", "JACKPOT", "10", "20", "0"];
-    const colors = ["#101623", "#1b2135", "#101623", "#1b2135", "#ffcc00", "#101623", "#1b2135", "#101623"];
-
     function drawWheel() {
-        let angle = (2 * Math.PI) / rewards.length;
-        for (let i = 0; i < rewards.length; i++) {
-            wctx.beginPath(); wctx.moveTo(110, 110);
-            wctx.arc(110, 110, 110, i * angle, (i + 1) * angle);
-            wctx.fillStyle = colors[i]; wctx.fill();
-            wctx.save(); wctx.translate(110, 110); wctx.rotate(i * angle + angle / 2);
-            wctx.fillStyle = colors[i] === "#ffcc00" ? "#000" : "#fff";
-            wctx.font = "bold 11px Arial"; wctx.fillText(rewards[i], 60, 4); wctx.restore();
-        }
+        wctx.clearRect(0,0,220,220);
+        wctx.fillStyle = "#ffcc00"; wctx.beginPath(); wctx.arc(110,110,110,0,Math.PI*2); wctx.fill();
+        wctx.fillStyle = "#000"; wctx.font = "20px Arial"; wctx.fillText("SPIN", 85, 120);
     }
 
-    let rotation = 0;
     function spinWheel() {
-        let btn = document.getElementById('spin-btn');
-        btn.disabled = true;
-        let extraRot = Math.floor(Math.random() * 360) + 1800;
-        rotation += extraRot;
-        wheelCanvas.style.transform = `rotate(${rotation}deg)`;
-        
-        setTimeout(() => {
-            btn.disabled = false;
-            let win = Math.floor(Math.random() * 91) + 10;
-            balance += win;
-            localStorage.setItem('web_crs_balance', balance);
-            document.getElementById('crs-balance').innerText = balance.toFixed(2);
-            alert("You Won " + win + " CRS!");
-        }, 4000);
+        let win = Math.floor(Math.random() * 50) + 10;
+        balance += win;
+        localStorage.setItem('web_crs_balance', balance);
+        document.getElementById('crs-balance').innerText = balance.toFixed(2);
+        alert("You Won " + win + " CRS!");
     }
 
     function hourlyReward() {
-        let lastClaim = localStorage.getItem('web_crs_hourly');
-        let now = Date.now(); 
-
-        if (lastClaim && (now - parseInt(lastClaim)) < 3600000) {
-            let remainingMinutes = Math.ceil((3600000 - (now - parseInt(lastClaim))) / 60000);
-            alert("Please wait " + remainingMinutes + " minutes to claim your next bonus!");
-        } else {
-            balance += 100;
-            localStorage.setItem('web_crs_balance', balance);
-            localStorage.setItem('web_crs_hourly', now.toString());
-            document.getElementById('crs-balance').innerText = balance.toFixed(2);
-            alert("100 CRS Hourly Bonus added successfully!");
-        }
+        balance += 100;
+        localStorage.setItem('web_crs_balance', balance);
+        document.getElementById('crs-balance').innerText = balance.toFixed(2);
+        alert("100 CRS Bonus added!");
     }
+
+    function copyReferral() { alert("Link copied!"); }
 </script>
 </body>
 </html>
